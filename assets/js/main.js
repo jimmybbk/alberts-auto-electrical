@@ -396,6 +396,29 @@
   var tr = document.querySelector('.hours-table tr[data-day="' + rows[day] + '"]');
   if (tr) tr.classList.add("today");
 
+  /* ----- Blog archive search ----- */
+  var blogSearch = document.querySelector("[data-blog-search]");
+  if (blogSearch) {
+    var grid = document.querySelector("[data-blog-grid]");
+    var cards = grid ? Array.prototype.slice.call(grid.querySelectorAll(".post-card")) : [];
+    var countEl = document.querySelector("[data-blog-count]");
+    var emptyEl = document.querySelector("[data-blog-empty]");
+    var total = cards.length;
+    function blogFilter() {
+      var q = blogSearch.value.trim().toLowerCase();
+      var shown = 0;
+      cards.forEach(function (card) {
+        var match = !q || card.textContent.toLowerCase().indexOf(q) !== -1;
+        card.style.display = match ? "" : "none";
+        if (match) shown++;
+      });
+      if (countEl) countEl.textContent = q ? shown + " of " + total + " projects" : total + " projects";
+      if (emptyEl) emptyEl.hidden = shown !== 0;
+    }
+    blogSearch.addEventListener("input", blogFilter);
+    blogFilter();
+  }
+
   /* ----- Footer year ----- */
   document.querySelectorAll("[data-year]").forEach(function (el) {
     el.textContent = new Date().getFullYear();

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://jimmybbk.github.io/alberts-auto-electrical/sitemap.xml
