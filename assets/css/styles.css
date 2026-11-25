@@ -577,6 +577,42 @@ body.nav-open .nav-toggle span::after { top: 0; transform: rotate(-45deg); }
   html { scroll-behavior: auto; }
 }
 
+/* ---------- Interactive extras ---------- */
+.scroll-progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 200; pointer-events: none; }
+.scroll-progress span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--blue), #8cc8ff); box-shadow: 0 0 10px rgba(46, 155, 255, 0.7); }
+
+.home-hero .volt { animation: voltFlicker 6s infinite; }
+@keyframes voltFlicker {
+  0%, 86%, 92%, 100% { opacity: 1; text-shadow: 0 0 24px rgba(46, 155, 255, 0.45); }
+  88% { opacity: 0.6; text-shadow: none; }
+  90% { opacity: 0.85; text-shadow: 0 0 32px rgba(46, 155, 255, 0.95); }
+}
+
+.spot { position: relative; }
+.spot::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: 0;
+  background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 50%), rgba(46, 155, 255, 0.13), transparent 70%);
+  opacity: 0; transition: opacity 0.25s; pointer-events: none;
+}
+.spot:hover::before { opacity: 1; }
+.spot > * { position: relative; z-index: 1; }
+
+.t-track { cursor: grab; }
+.t-track.dragging { cursor: grabbing; scroll-snap-type: none; scroll-behavior: auto; }
+.t-dots { display: flex; gap: 8px; align-items: center; }
+.t-dot { width: 9px; height: 9px; border-radius: 99px; border: 0; padding: 0; cursor: pointer; background: rgba(35, 43, 54, 0.22); transition: background 0.2s, width 0.2s; }
+.t-dot.active { width: 24px; background: var(--blue); }
+
+.hero-actions a.active { background: var(--blue); border-color: var(--blue); color: #fff; box-shadow: 0 8px 22px rgba(46, 155, 255, 0.4); }
+
+.hero-visual img { transition: transform 0.25s ease; will-change: transform; }
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero .volt { animation: none; }
+  .hero-visual img { transition: none; }
+  .t-track { cursor: default; }
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1080px) {
   .home-hero-grid { grid-template-columns: 1fr; gap: 48px; }
