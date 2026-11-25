@@ -311,6 +311,19 @@ def cta_band(route, h2, p, ghost_label="Book Online", ghost_to="contact-us", sol
     </section>'''
 
 
+def make_redirect_stub(target, label):
+    return ('<!DOCTYPE html>\n<html lang="en-AU"><head>\n'
+            '<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
+            f'<title>Redirecting to {label} | Albert\'s Auto Electrical</title>\n'
+            '<meta name="robots" content="noindex">\n'
+            f'<meta http-equiv="refresh" content="0; url={target}">\n'
+            f'<script>location.replace("{target}");</script>\n'
+            '<style>body{font-family:system-ui,sans-serif;display:grid;place-items:center;'
+            'min-height:100vh;margin:0;background:#0b0f16;color:#e9eef5;text-align:center}'
+            'a{color:#2e9bff}</style>\n</head><body><div><p>This page has moved.</p>'
+            f'<p><a href="{target}">Continue to {label} &rarr;</a></p></div></body></html>')
+
+
 def neighbor(items, idx):
     prev_i = items[idx - 1] if idx > 0 else items[-1]
     next_i = items[(idx + 1) % len(items)]
@@ -1022,20 +1035,18 @@ def main():
                            ("testimonials.html", "testimonial", "Testimonials"),
                            ("locations.html", "locations", "Locations"),
                            ("contact.html", "contact-us", "Contact Us")]:
-        target = href("", to)
-        stub = ('<!DOCTYPE html>\n<html lang="en-AU"><head>\n'
-                '<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
-                f'<title>Redirecting to {label} | Albert\'s Auto Electrical</title>\n'
-                f'<link rel="canonical" href="{SITE}/{to}/">\n'
-                f'<meta http-equiv="refresh" content="0; url={target}">\n'
-                f'<script>location.replace("{target}");</script>\n'
-                '<style>body{font-family:system-ui,sans-serif;display:grid;place-items:center;'
-                'min-height:100vh;margin:0;background:#0b0f16;color:#e9eef5;text-align:center}'
-                'a{color:#2e9bff}</style>\n</head><body><div><p>This page has moved.</p>'
-                f'<p><a href="{target}">Continue to {label} &rarr;</a></p></div></body></html>')
         with open(os.path.join(ROOT, old), "w", encoding="utf-8", newline="\n") as fh:
-            fh.write(stub)
+            fh.write(make_redirect_stub(href("", to), label))
         built.append(os.path.join(ROOT, old))
+
+    # compat redirects: one early deploy served posts under /blog/<slug>/
+    # so any bookmarks of those URLs keep working
+    for b in BLOG:
+        stub_path = os.path.join(ROOT, "blog", b["slug"], "index.html")
+        os.makedirs(os.path.dirname(_win_long(stub_path)), exist_ok=True)
+        with open(_win_long(stub_path), "w", encoding="utf-8", newline="\n") as fh:
+            fh.write(make_redirect_stub("../" + urllib.parse.unquote(b["slug"]) + "/", b["title"]))
+        built.append(stub_path)
 
     with open(os.path.join(ROOT, "sitemap.xml"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
