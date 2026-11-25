@@ -75,6 +75,13 @@
   } else {
     revealEls.forEach(function (el) { el.classList.add("in"); });
   }
+  /* safety net: if observers never fire (embedded browsers, throttling),
+     force everything visible so no content is ever stuck invisible */
+  window.setTimeout(function () {
+    document.querySelectorAll(".reveal:not(.in)").forEach(function (el) {
+      el.classList.add("in");
+    });
+  }, 2500);
 
   /* ----- Animated count-up stats ----- */
   function animateCount(el) {

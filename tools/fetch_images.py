@@ -17,9 +17,12 @@ ORIG = "https://albertsautoelectrical.com.au"
 
 
 def sanitize(s, maxlen=40):
-    s = urllib.parse.unquote(s)
-    s = re.sub(r"[^a-z0-9-]+", "-", s.lower()).strip("-")
-    return s[:maxlen].strip("-")
+    original = urllib.parse.unquote(s)
+    s = re.sub(r"[^a-z0-9-]+", "-", original.lower()).strip("-")[:maxlen].strip("-")
+    if len(s) < 4:
+        import hashlib
+        s = "img-" + hashlib.md5(original.encode("utf-8")).hexdigest()[:10]
+    return s
 
 
 def basename(url):

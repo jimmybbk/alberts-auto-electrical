@@ -1014,6 +1014,29 @@ def main():
     routes += ["testimonial/" + t["slug"] for t in TESTIMONIALS]
     routes += ["gallery/" + g["slug"] for g in GALLERY]
     routes += ["service-estimate/" + e["slug"] for e in ESTIMATES]
+
+    # redirect stubs for the old flat URLs (bookmarks / history / old links)
+    for old, to, label in [("about.html", "about-us", "About Us"),
+                           ("services.html", "serve", "Services"),
+                           ("gallery.html", "gallery", "Gallery"),
+                           ("testimonials.html", "testimonial", "Testimonials"),
+                           ("locations.html", "locations", "Locations"),
+                           ("contact.html", "contact-us", "Contact Us")]:
+        target = href("", to)
+        stub = ('<!DOCTYPE html>\n<html lang="en-AU"><head>\n'
+                '<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
+                f'<title>Redirecting to {label} | Albert\'s Auto Electrical</title>\n'
+                f'<link rel="canonical" href="{SITE}/{to}/">\n'
+                f'<meta http-equiv="refresh" content="0; url={target}">\n'
+                f'<script>location.replace("{target}");</script>\n'
+                '<style>body{font-family:system-ui,sans-serif;display:grid;place-items:center;'
+                'min-height:100vh;margin:0;background:#0b0f16;color:#e9eef5;text-align:center}'
+                'a{color:#2e9bff}</style>\n</head><body><div><p>This page has moved.</p>'
+                f'<p><a href="{target}">Continue to {label} &rarr;</a></p></div></body></html>')
+        with open(os.path.join(ROOT, old), "w", encoding="utf-8", newline="\n") as fh:
+            fh.write(stub)
+        built.append(os.path.join(ROOT, old))
+
     with open(os.path.join(ROOT, "sitemap.xml"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
         for r in routes:
