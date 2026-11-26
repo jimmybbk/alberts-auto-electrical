@@ -31,6 +31,10 @@ try:
     IMAGES = load("images.json")
 except FileNotFoundError:
     IMAGES = {}
+try:
+    INLINE_IMAGES = load("inline_images.json")
+except FileNotFoundError:
+    INLINE_IMAGES = {}
 
 esc = hm.escape
 
@@ -443,9 +447,22 @@ def build_blog_post(b, idx):
     img_tag = img if img.startswith("http") else asset(route, img)
     paras = paragraphs(b.get("text", "")) or ["This project speaks for itself — see the photos below, or call Albert on 0421 667 118 to talk about your build."]
     body = "\n".join(f"<p>{esc(p)}</p>" for p in paras)
-    extra = [i for i in (b.get("imgs") or []) if i != b.get("image")][:3]
+    # inline figures: dedupe size variants of the same base photo, local only
+    seen_bases = set()
+    extra = []
+    for i in b.get("imgs") or []:
+        base = re.sub(r"-\d+x\d+(?=\.[a-z]+$)", "", i)
+        if base in seen_bases:
+            continue
+        local = INLINE_IMAGES.get(i, "")
+        if not local:
+            continue  # never hotlink; skip if the download failed
+        seen_bases.add(base)
+        extra.append(local)
+        if len(extra) >= 4:
+            break
     figs = "".join(
-        f'<figure class="post-fig"><img src="{esc(i)}" alt="{esc(b["title"])}" loading="lazy"></figure>'
+        f'<figure class="post-fig"><img src="{asset(route, i)}" alt="{esc(b["title"])}" loading="lazy"></figure>'
         for i in extra)
     d = fmt_date(b.get("date"))
     main = f'''
@@ -1042,7 +1059,7 @@ def main():
     # compat redirects: one early deploy served posts under /blog/<slug>/
     # so any bookmarks of those URLs keep working
     for b in BLOG:
-        stub_path = os.path.join(ROOT, "blog", b["slug"], "index.html")
+        stub_path = os.path.join(ROOT, "blog", urllib.parse.unquote(b["slug"]), "index.html")
         os.makedirs(os.path.dirname(_win_long(stub_path)), exist_ok=True)
         with open(_win_long(stub_path), "w", encoding="utf-8", newline="\n") as fh:
             fh.write(make_redirect_stub("../" + urllib.parse.unquote(b["slug"]) + "/", b["title"]))
