@@ -14,7 +14,11 @@ from datetime import datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-SITE = "https://jimmybbk.github.io/alberts-auto-electrical"
+DOMAIN = "albertsautoelectrical.com.au"   # must match the CNAME file written by main()
+SITE = "https://" + DOMAIN
+# WhatsApp: the business mobile in international format (no "+", spaces or dashes).
+WHATSAPP_URL = ("https://wa.me/61421667118?text=" +
+                urllib.parse.quote("Hi Albert's Auto Electrical! I'd like a quote or to book my car in."))
 
 MONTHS = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
@@ -38,6 +42,22 @@ except FileNotFoundError:
     INLINE_IMAGES = {}
 
 esc = hm.escape
+
+# official WhatsApp glyph (Simple Icons, CC0) — filled, so it bypasses icon()
+WA_PATH = ('<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15'
+           '-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475'
+           '-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52'
+           '.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207'
+           '-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372'
+           '-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 '
+           '5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 '
+           '2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004'
+           'a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 '
+           '01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 '
+           '9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 '
+           '0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654'
+           'a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 '
+           '0 00-3.48-8.413Z"/>')
 
 # ---------------------------------------------------------------- links
 def href(frm, to):
@@ -249,6 +269,17 @@ def footer(route):
   </footer>
 
   <a class="float-call" href="tel:+61421667118">{icon("phone")} Call Albert</a>
+  <div class="wa-widget">
+    <div class="wa-bubble" data-wa-bubble hidden>
+      <button type="button" class="wa-close" data-wa-close aria-label="Dismiss">&times;</button>
+      <p><strong>Need a quote?</strong> Message us on WhatsApp — send us a photo of the problem and we'll point you in the right direction.</p>
+      <a class="wa-bubble-link" href="{WHATSAPP_URL}" target="_blank" rel="noopener">Start a chat {icon("arrow")}</a>
+    </div>
+    <a class="wa-btn" href="{WHATSAPP_URL}" target="_blank" rel="noopener" data-wa-open aria-label="Message Albert's Auto Electrical on WhatsApp">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">{WA_PATH}</svg>
+      <span>WhatsApp us</span>
+    </a>
+  </div>
   <button class="to-top" aria-label="Back to top">{icon("up")}</button>'''
 
 
@@ -1139,13 +1170,22 @@ def main():
         MANIFEST["stubs"].append("blog/" + b["slug"] + "/")
         built.append(stub_path)
 
+    # sitemap: every page on the site, with the publish date of each blog post
+    lastmod = {b["slug"]: b["date"][:10] for b in BLOG if b.get("date")}
     with open(os.path.join(ROOT, "sitemap.xml"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
         for r in routes:
-            fh.write(f"  <url><loc>{SITE}/{r + '/' if r else ''}</loc></url>\n")
+            loc = f"{SITE}/{r + '/' if r else ''}"
+            if r in lastmod:
+                fh.write(f"  <url>\n    <loc>{loc}</loc>\n    <lastmod>{lastmod[r]}</lastmod>\n  </url>\n")
+            else:
+                fh.write(f"  <url><loc>{loc}</loc></url>\n")
         fh.write("</urlset>\n")
     with open(os.path.join(ROOT, "robots.txt"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write(f"User-agent: *\nAllow: /\nSitemap: {SITE}/sitemap.xml\n")
+    # tells GitHub Pages which domain serves the site (needs matching DNS records)
+    with open(os.path.join(ROOT, "CNAME"), "w", encoding="utf-8", newline="\n") as fh:
+        fh.write(DOMAIN + "\n")
     # skip Jekyll processing on GitHub Pages — output is served as-is
     with open(os.path.join(ROOT, ".nojekyll"), "w", encoding="utf-8") as fh:
         fh.write("")

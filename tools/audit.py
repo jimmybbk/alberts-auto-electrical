@@ -26,7 +26,7 @@ os.chdir(ROOT)
 BASE = (sys.argv[1] if len(sys.argv) > 1 else "http://localhost:8471").rstrip("/")
 IS_LOCAL = urllib.parse.urlparse(BASE).hostname in ("localhost", "127.0.0.1")
 
-REF_RE = re.compile(r'(?:href|src|data-full)="([^"]+)"')
+REF_RE = re.compile(r'(href|src|data-full)="([^"]+)"')
 STUB_RE = re.compile(r'http-equiv="refresh" content="0; url=([^"]+)"')
 
 
@@ -100,14 +100,18 @@ for path, url, code, body in crawled:
         problems["redirects"].append(f"STUB WITHOUT REDIRECT {label}")
         continue
     page_html[path] = html
-    refs = list(REF_RE.findall(html))
+    refs = list(REF_RE.findall(html))                # (attribute, value)
     for ss in re.findall(r'srcset="([^"]*)"', html):   # every candidate URL in srcset
-        refs += [c.strip().split(" ")[0] for c in ss.split(",") if c.strip()]
-    for ref in refs:
+        refs += [("srcset", c.strip().split(" ")[0]) for c in ss.split(",") if c.strip()]
+    for kind, ref in refs:
         if ref.startswith(("mailto:", "tel:", "javascript:")) or ref.startswith("#") or ref == "":
             continue
         if ref.startswith(("http://", "https://", "//")):
-            if "albertsautoelectrical.com.au" in ref:
+            # A resource LOADED from another host is a hotlink (it breaks if that
+            # site changes or goes down). Ordinary links are fine, and the Google
+            # Maps embed on the contact page is intentional.
+            external_resource = kind != "href" and not ref.startswith("https://www.google.com/maps")
+            if external_resource:
                 problems["assets"].append(f"HOTLINK {label} -> {ref[:100]}")
             continue
         resolved = urllib.parse.urljoin(url, hm.unescape(ref).split("#")[0]).split("#")[0]
@@ -190,7 +194,7 @@ code, body = fetch(BASE + "/404.html")
 page404 = body.decode("utf-8", "replace")
 if code != 200:
     problems["404"].append(f"404.html returns {code}")
-rel_refs = [r for r in REF_RE.findall(page404) if not r.startswith(("http://", "https://", "mailto:", "tel:", "#"))]
+rel_refs = [r for _, r in REF_RE.findall(page404) if not r.startswith(("http://", "https://", "mailto:", "tel:", "#"))]
 if rel_refs:
     problems["404"].append(f"404.html has relative refs (breaks at arbitrary URLs): {rel_refs[:3]}")
 if not IS_LOCAL:

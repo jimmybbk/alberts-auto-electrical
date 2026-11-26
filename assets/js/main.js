@@ -580,6 +580,25 @@
     });
   }
 
+  /* ----- WhatsApp widget: show the prompt once per visitor ----- */
+  var waBubble = document.querySelector("[data-wa-bubble]");
+  if (waBubble) {
+    var WA_KEY = "aae-whatsapp-prompt-dismissed";
+    var dismissed = false;
+    try { dismissed = window.localStorage.getItem(WA_KEY) === "1"; } catch (e) { /* storage blocked */ }
+    if (!dismissed) {
+      window.setTimeout(function () { waBubble.hidden = false; }, 5000);
+    }
+    var dismissWa = function () {
+      waBubble.hidden = true;
+      try { window.localStorage.setItem(WA_KEY, "1"); } catch (e) { /* storage blocked */ }
+    };
+    var waClose = waBubble.querySelector("[data-wa-close]");
+    if (waClose) waClose.addEventListener("click", dismissWa);
+    var waOpen = document.querySelector("[data-wa-open]");
+    if (waOpen) waOpen.addEventListener("click", dismissWa);
+  }
+
   /* ----- Highlight today in opening hours ----- */
   var day = new Date().getDay(); // 0 Sun … 6 Sat
   var rows = { 1: "mon", 2: "mon", 3: "mon", 4: "mon", 5: "mon", 6: "sat", 0: "sun" };

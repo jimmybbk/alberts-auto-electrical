@@ -628,7 +628,7 @@ body.nav-open .nav-toggle span::after { top: 0; transform: rotate(-45deg); }
 }
 .float-call svg { width: 19px; height: 19px; }
 .to-top {
-  position: fixed; right: 20px; bottom: 20px; z-index: 90;
+  position: fixed; right: 20px; bottom: 92px; z-index: 90;   /* sits above the WhatsApp button */
   width: 48px; height: 48px; border-radius: 50%; border: 0; cursor: pointer;
   background: var(--ink); color: #fff; display: grid; place-items: center;
   opacity: 0; visibility: hidden; transform: translateY(12px); transition: all 0.25s;
@@ -636,6 +636,41 @@ body.nav-open .nav-toggle span::after { top: 0; transform: rotate(-45deg); }
 .to-top.show { opacity: 1; visibility: visible; transform: none; }
 .to-top:hover { background: var(--blue-strong); }
 .to-top svg { width: 20px; height: 20px; }
+
+/* ---------- WhatsApp widget ---------- */
+.wa-widget {
+  position: fixed; right: 20px; bottom: 20px; z-index: 95;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 12px;
+}
+.wa-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: #25d366; color: #fff; border-radius: 999px; padding: 12px 22px 12px 15px;
+  font-weight: 700; font-size: 15px; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.wa-btn:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(0, 0, 0, 0.32); }
+.wa-btn svg { width: 26px; height: 26px; flex: none; }
+.wa-bubble {
+  width: min(320px, calc(100vw - 40px)); background: #fff; color: var(--text);
+  border-radius: 16px; box-shadow: var(--shadow-lg); padding: 20px 20px 16px;
+  position: relative; font-size: 14.5px; line-height: 1.5;
+  animation: waPop 0.25s ease-out;
+}
+.wa-bubble p { margin: 0 0 12px; }
+.wa-bubble strong { color: var(--ink); font-family: var(--font-display); }
+.wa-close {
+  position: absolute; top: 4px; right: 10px; border: 0; background: none; padding: 4px;
+  color: var(--text-soft); font-size: 22px; line-height: 1; cursor: pointer;
+}
+.wa-bubble-link { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14.5px; }
+.wa-bubble-link svg { width: 16px; height: 16px; }
+@keyframes waPop { from { opacity: 0; transform: translateY(8px) scale(0.97); } to { opacity: 1; transform: none; } }
+
+/* two-column block whose image sits on the left on wide screens */
+@media (min-width: 861px) {
+  .grid-2.media-left > .feature-media { order: -1; }
+}
+section[id] { scroll-margin-top: 92px; }   /* linked sections clear the sticky header */
 
 /* ---------- Reveal animation ---------- */
 .reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.6s ease, transform 0.6s ease; }
@@ -679,6 +714,8 @@ body.nav-open .nav-toggle span::after { top: 0; transform: rotate(-45deg); }
   .home-hero .volt { animation: none; }
   .hero-visual img { transition: none; }
   .t-track { cursor: default; }
+  .wa-bubble { animation: none; }
+  .wa-btn { transition: none; }
 }
 
 /* ---------- Blog ---------- */
@@ -828,6 +865,8 @@ body.nav-open .nav-toggle span::after { top: 0; transform: rotate(-45deg); }
 
 @media (max-width: 560px) {
   body { font-size: 15.5px; }
+  .wa-btn { padding: 15px; }            /* icon only on phones, beside the call button */
+  .wa-btn span { display: none; }
   .grid-3, .grid-4, .steps-grid, .g-grid { grid-template-columns: 1fr; }
   .form-grid { grid-template-columns: 1fr; }
   .stats-grid { grid-template-columns: 1fr 1fr; }
