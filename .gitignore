@@ -3,3 +3,5 @@ Thumbs.db
 debug.html
 __pycache__/
 _form-*.html
+huewrite_key.txt
+.build-manifest.json
