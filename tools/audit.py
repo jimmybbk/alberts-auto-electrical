@@ -100,7 +100,10 @@ for path, url, code, body in crawled:
         problems["redirects"].append(f"STUB WITHOUT REDIRECT {label}")
         continue
     page_html[path] = html
-    for ref in REF_RE.findall(html):
+    refs = list(REF_RE.findall(html))
+    for ss in re.findall(r'srcset="([^"]*)"', html):   # every candidate URL in srcset
+        refs += [c.strip().split(" ")[0] for c in ss.split(",") if c.strip()]
+    for ref in refs:
         if ref.startswith(("mailto:", "tel:", "javascript:")) or ref.startswith("#") or ref == "":
             continue
         if ref.startswith(("http://", "https://", "//")):

@@ -335,6 +335,18 @@ body.nav-open .nav-toggle span::after { top: 0; transform: rotate(-45deg); }
 .exp-badge .n { font-family: var(--font-display); font-size: 40px; font-weight: 700; line-height: 1; }
 .exp-badge .t { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; max-width: 9ch; }
 
+/* ---------- People portrait ---------- */
+.people-card { position: relative; margin: 0; max-width: 560px; }
+.people-card img.main { width: 100%; height: auto; object-fit: contain; }
+.people-plate {
+  position: absolute; left: 16px; right: 16px; bottom: 16px;
+  background: rgba(10, 14, 20, 0.82); backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 14px;
+  padding: 12px 18px; color: #fff; display: flex; flex-direction: column; gap: 2px;
+}
+.people-plate .nm { font-family: var(--font-display); font-weight: 700; font-size: 17px; }
+.people-plate .rl { font-size: 13px; color: var(--text-inv-soft); }
+
 /* ---------- Steps ---------- */
 .steps-grid { counter-reset: step; display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px; }
 .step { position: relative; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--line-dark); border-radius: var(--radius); padding: 30px 26px; }

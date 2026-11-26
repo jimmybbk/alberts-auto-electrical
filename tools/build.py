@@ -207,7 +207,7 @@ def footer(route):
           <img src="{a('assets/img/logo.png')}" alt="Albert's Auto Electrical logo">
           <span class="brand-name">Albert's<em>Auto Electrical</em></span>
         </a>
-        <p class="f-desc">Specialist auto electrical services for performance cars, classics, 4WDs, trucks and everything in between — proudly serving NSW for over 20 years.</p>
+        <p class="f-desc">Specialist auto electrical services for performance cars, classics, 4WDs, trucks and everything in between — proudly serving NSW with 25 years of experience.</p>
       </div>
       <div>
         <h4>Quick Links</h4>
@@ -391,6 +391,12 @@ def rewrite(route, content):
         link_repl, content)
     p = pfx(route)
     content = re.sub(r'((?:src|href|data-full)=")assets/', r"\1" + p + "assets/", content)
+
+    # srcset holds several URLs in one attribute — prefix each of them
+    def srcset_repl(m):
+        inner = re.sub(r"(^|,\s*)assets/", lambda mm: mm.group(1) + p + "assets/", m.group(1))
+        return 'srcset="' + inner + '"'
+    content = re.sub(r'srcset="([^"]*)"', srcset_repl, content)
     return content
 
 
@@ -1023,7 +1029,7 @@ def main():
         "home", "assets/img/hero-car.png")))
     built.append(write_page("about-us", core_page("about-us", "about.html",
         "About Us | Albert's Auto Electrical — Sydney Auto Electrician",
-        "Founded on a passion for cars — meet Albert Costagliola and the values behind 20+ years of quality auto electrical workmanship across NSW.",
+        "Founded on a passion for cars — meet Managing Director Albert Costagliola and the values behind 25 years of quality auto electrical workmanship across NSW.",
         "about")))
     built.append(write_page("serve", core_page("serve", "services.html",
         "Auto Electrical Services | Performance, Classic, 4WD & Air-Con — Albert's Auto Electrical",
