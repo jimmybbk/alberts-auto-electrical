@@ -8,6 +8,7 @@ import json
 import os
 import posixpath
 import re
+import shutil
 import urllib.parse
 from datetime import datetime
 
@@ -40,11 +41,16 @@ esc = hm.escape
 
 # ---------------------------------------------------------------- links
 def href(frm, to):
-    """Relative href from route `frm` to directory route `to` ('' = home)."""
-    frm_dir = posixpath.dirname(frm) if frm else "."
+    """Relative href from route `frm` to directory route `to` ('' = home).
+
+    Pages live at <frm>/index.html, so a browser resolves relative URLs
+    against <frm> ITSELF — not dirname(<frm>). That is the base used here;
+    getting this wrong makes every subpage link resolve one level too deep.
+    """
+    base = frm if frm else "."
     if to:
-        return posixpath.relpath(to, frm_dir).replace("\\", "/") + "/"
-    return posixpath.relpath(".", frm_dir).replace("\\", "/")
+        return posixpath.relpath(to, base).replace("\\", "/") + "/"
+    return posixpath.relpath(".", base).replace("\\", "/") + "/"
 
 
 def depth(route):
@@ -336,10 +342,15 @@ def neighbor(items, idx):
 
 def prev_next(route, base_route, items, idx, label_fn):
     p, n = neighbor(items, idx)
+
+    def tgt(item):
+        # base_route "" means items sit at the site root (blog posts)
+        return (base_route + "/" + item["slug"]) if base_route else item["slug"]
+
     return f'''
         <div class="pn-nav">
-          <a class="pn-btn" href="{href(route, base_route + '/' + p['slug'])}">← {esc(label_fn(p))}</a>
-          <a class="pn-btn" href="{href(route, base_route + '/' + n['slug'])}">{esc(label_fn(n))} →</a>
+          <a class="pn-btn" href="{href(route, tgt(p))}">← {esc(label_fn(p))}</a>
+          <a class="pn-btn" href="{href(route, tgt(n))}">{esc(label_fn(n))} →</a>
         </div>'''
 
 
@@ -914,20 +925,38 @@ def build_estimate(e, idx):
 
 # ---------------------------------------------------------------- 404
 def build_404():
-    route = "404"
-    main = f'''
-    <section class="page-hero">
-      <div class="container" style="text-align:center;">
-        <h1 style="max-width:none;">404 — dead wire</h1>
-        <p style="margin-inline:auto;">That circuit doesn't lead anywhere. Let's get you back to a live one.</p>
-        <div class="hero-actions" style="justify-content:center;">
-          <a class="btn btn-solid" href="index.html">Back to Home</a>
-          <a class="btn btn-ghost" href="{href(route, 'contact-us')}">Contact Us</a>
-        </div>
-      </div>
-    </section>'''
-    return page_shell(route, "404 — Page Not Found | Albert's Auto Electrical",
-                      "Page not found.", "", main)
+    """Self-contained: GitHub Pages serves 404.html at arbitrary URL paths,
+    so every reference must be absolute — relative links/assets would break."""
+    return f'''<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 — Page Not Found | Albert's Auto Electrical</title>
+  <link rel="icon" type="image/png" href="{SITE}/assets/img/logo.png">
+  <style>
+    body {{ margin: 0; min-height: 100vh; display: grid; place-items: center;
+           background: #0b0f16; color: #e9eef5; text-align: center;
+           font-family: system-ui, -apple-system, "Segoe UI", sans-serif; padding: 24px; }}
+    h1 {{ font-size: clamp(34px, 6vw, 56px); margin: 0 0 10px; letter-spacing: -0.02em; }}
+    p {{ color: #9aa8ba; max-width: 46ch; margin: 0 auto 28px; line-height: 1.6; }}
+    a.btn {{ display: inline-block; padding: 14px 28px; border-radius: 999px; margin: 0 8px;
+             font-weight: 700; text-decoration: none; font-size: 15.5px; }}
+    a.solid {{ background: #2e9bff; color: #fff; }}
+    a.ghost {{ border: 2px solid rgba(255,255,255,0.2); color: #e9eef5; }}
+    .logo {{ width: 74px; height: 74px; margin: 0 auto 22px; display: block; }}
+  </style>
+</head>
+<body>
+  <div>
+    <img class="logo" src="{SITE}/assets/img/logo.png" alt="Albert's Auto Electrical">
+    <h1>404 — dead wire</h1>
+    <p>That circuit doesn't lead anywhere. Let's get you back to a live one.</p>
+    <a class="btn solid" href="{SITE}/">Back to Home</a>
+    <a class="btn ghost" href="{SITE}/contact-us/">Contact Us</a>
+  </div>
+</body>
+</html>'''
 
 
 # ---------------------------------------------------------------- assemble + write
@@ -936,6 +965,9 @@ def _win_long(p):
     if os.name == "nt" and not p.startswith("\\\\?\\"):
         return "\\\\?\\" + os.path.abspath(p)
     return p
+
+
+MANIFEST = {"pages": [], "stubs": []}   # public URL paths this build produced
 
 
 def write_page(route, html):
@@ -947,11 +979,42 @@ def write_page(route, html):
     os.makedirs(_win_long(os.path.dirname(path)), exist_ok=True)
     with open(_win_long(path), "w", encoding="utf-8", newline="\n") as fh:
         fh.write(html)
+    MANIFEST["pages"].append(route + "/" if route else "")
     return path
+
+
+def purge_stale_twins():
+    """Remove leftover percent-encoded twin dirs from older builds, e.g.
+    '%f0%9f%98%8e-slug/' sitting next to the decoded '😎-slug/'. A dir is only
+    removed when its DECODED name is a current route and the dir itself is not,
+    so nothing hand-written or unrelated can ever match."""
+    known = {
+        "": {urllib.parse.unquote(b["slug"]) for b in BLOG},
+        "blog": {urllib.parse.unquote(b["slug"]) for b in BLOG},
+        "gallery": {urllib.parse.unquote(g["slug"]) for g in GALLERY},
+        "testimonial": {urllib.parse.unquote(t["slug"]) for t in TESTIMONIALS},
+        "service-estimate": {e["slug"] for e in ESTIMATES},
+    }
+    removed = 0
+    for parent, names in known.items():
+        base = os.path.join(ROOT, parent) if parent else ROOT
+        try:
+            entries = os.listdir(_win_long(base))
+        except OSError:
+            continue
+        for name in entries:
+            if "%" not in name or name in names or urllib.parse.unquote(name) not in names:
+                continue
+            shutil.rmtree(_win_long(os.path.join(base, name)), ignore_errors=True)
+            removed += 1
+    return removed
 
 
 def main():
     built = []
+    stale = purge_stale_twins()
+    MANIFEST["pages"].clear()
+    MANIFEST["stubs"].clear()
 
     # core pages rebuilt from existing content with original-URL links
     built.append(write_page("", core_page("", "index.html",
@@ -1044,6 +1107,7 @@ def main():
     routes += ["testimonial/" + t["slug"] for t in TESTIMONIALS]
     routes += ["gallery/" + g["slug"] for g in GALLERY]
     routes += ["service-estimate/" + e["slug"] for e in ESTIMATES]
+    routes = list(dict.fromkeys(routes))  # dedupe, keep order
 
     # redirect stubs for the old flat URLs (bookmarks / history / old links)
     for old, to, label in [("about.html", "about-us", "About Us"),
@@ -1054,6 +1118,7 @@ def main():
                            ("contact.html", "contact-us", "Contact Us")]:
         with open(os.path.join(ROOT, old), "w", encoding="utf-8", newline="\n") as fh:
             fh.write(make_redirect_stub(href("", to), label))
+        MANIFEST["stubs"].append(old)
         built.append(os.path.join(ROOT, old))
 
     # compat redirects: one early deploy served posts under /blog/<slug>/
@@ -1062,7 +1127,10 @@ def main():
         stub_path = os.path.join(ROOT, "blog", urllib.parse.unquote(b["slug"]), "index.html")
         os.makedirs(os.path.dirname(_win_long(stub_path)), exist_ok=True)
         with open(_win_long(stub_path), "w", encoding="utf-8", newline="\n") as fh:
-            fh.write(make_redirect_stub("../" + urllib.parse.unquote(b["slug"]) + "/", b["title"]))
+            # page lives at /blog/<slug>/, so the root-level post is two levels up
+            fh.write(make_redirect_stub(href("blog/" + b["slug"], b["slug"]), b["title"]))
+        # manifest stores the public URL path (percent-encoded, as in the data)
+        MANIFEST["stubs"].append("blog/" + b["slug"] + "/")
         built.append(stub_path)
 
     with open(os.path.join(ROOT, "sitemap.xml"), "w", encoding="utf-8", newline="\n") as fh:
@@ -1072,8 +1140,17 @@ def main():
         fh.write("</urlset>\n")
     with open(os.path.join(ROOT, "robots.txt"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write(f"User-agent: *\nAllow: /\nSitemap: {SITE}/sitemap.xml\n")
+    # skip Jekyll processing on GitHub Pages — output is served as-is
+    with open(os.path.join(ROOT, ".nojekyll"), "w", encoding="utf-8") as fh:
+        fh.write("")
 
-    print(f"built {len(built)} pages + sitemap.xml ({len(routes)} urls) + robots.txt")
+    # exact list of what this build produced — tools/audit.py crawls this
+    # instead of walking the disk (Windows can't enumerate the longest folders)
+    with open(os.path.join(ROOT, ".build-manifest.json"), "w", encoding="utf-8") as fh:
+        json.dump(MANIFEST, fh, ensure_ascii=False, indent=1)
+
+    print(f"built {len(built)} pages + sitemap.xml ({len(routes)} urls) + robots.txt"
+          f" | purged {stale} stale dirs | manifest: {len(MANIFEST['pages'])} pages, {len(MANIFEST['stubs'])} stubs")
 
 
 if __name__ == "__main__":
