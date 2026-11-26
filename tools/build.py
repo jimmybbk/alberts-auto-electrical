@@ -730,7 +730,7 @@ def service_detail(route, kicker, h1, lead, img, badge, checks, brands=None, ext
           <div style="margin-top:28px;"><a class="card-link" href="{href(route, 'serve')}">All services {icon("arrow")}</a></div>
         </div>
         <div class="service-media reveal">
-          <img src="{asset(route, img)}" alt="{esc(h1)}">
+          <img src="{asset(route, img)}" alt="{h1}">
           <div class="media-badge">{icon("check")} {badge}</div>
         </div>
       </div>
@@ -815,7 +815,7 @@ FAQ_ITEMS = [
     ("How long will it take to complete the repairs?", "Most repairs are done the same day. If not possible, we arrange special transportation."),
     ("How much will it cost?", "We are happy to give you a fair-price estimate before work begins. Tell us about your vehicle and its symptoms, and you will know where you stand before we turn a spanner."),
     ("Is there a warranty on the repairs?", "Albert's Auto Electrical stands behind its workmanship, with quality repairs backed by our guarantee. Call us to discuss the specifics of your job."),
-    ("Do I have an option to pickup and deliver my vehicle?", "Yes, collection &amp; delivery of your vehicle can be arranged. Please ask when booking."),
+    ("Do I have an option to pickup and deliver my vehicle?", "Yes, collection & delivery of your vehicle can be arranged. Please ask when booking."),
     ("What types of vehicles do you service?", "Performance cars, classic cars, daily drivers, 4WDs, trucks, and light commercials: all makes and models."),
     ("What forms of payment do you accept?", "Call us on 0421 667 118 to confirm the payment options for your job."),
     ("How often should I get my car serviced?", "Follow your manufacturer's logbook intervals, and if something electrical is acting up between services, don't wait for it to get worse."),
