@@ -43,7 +43,7 @@ except FileNotFoundError:
 
 esc = hm.escape
 
-# official WhatsApp glyph (Simple Icons, CC0) — filled, so it bypasses icon()
+# official WhatsApp glyph (Simple Icons, CC0) - filled, so it bypasses icon()
 WA_PATH = ('<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15'
            '-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475'
            '-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52'
@@ -64,7 +64,7 @@ def href(frm, to):
     """Relative href from route `frm` to directory route `to` ('' = home).
 
     Pages live at <frm>/index.html, so a browser resolves relative URLs
-    against <frm> ITSELF — not dirname(<frm>). That is the base used here;
+    against <frm> ITSELF, not dirname(<frm>). That is the base used here;
     getting this wrong makes every subpage link resolve one level too deep.
     """
     base = frm if frm else "."
@@ -144,7 +144,7 @@ def topbar(route):
       <ul class="topbar-info">
         <li>{icon("pin")} 3/41 O'Connell St, Smithfield NSW 2164</li>
         <li>{icon("phone")} <a href="tel:+61421667118">0421 667 118</a></li>
-        <li>{icon("clock")} Mon–Fri 9am–5pm · Sat by appointment</li>
+        <li>{icon("clock")} Mon-Fri 9am-5pm · Sat by appointment</li>
       </ul>
       <div class="topbar-social">
         <a href="https://www.facebook.com/profile.php?id=100057614381716" aria-label="Facebook" rel="noopener" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.3-1.5 1.6-1.5h1.6V3.6c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.4-4 4.1v2.3H7.5V13h2.8v8h3.2z"/></svg></a>
@@ -227,7 +227,7 @@ def footer(route):
           <img src="{a('assets/img/logo.png')}" alt="Albert's Auto Electrical logo">
           <span class="brand-name">Albert's<em>Auto Electrical</em></span>
         </a>
-        <p class="f-desc">Specialist auto electrical services for performance cars, classics, 4WDs, trucks and everything in between — proudly serving NSW with 25 years of experience.</p>
+        <p class="f-desc">Specialist auto electrical services for performance cars, classics, 4WDs, trucks and everything in between, proudly serving NSW with 25 years of experience.</p>
       </div>
       <div>
         <h4>Quick Links</h4>
@@ -255,7 +255,7 @@ def footer(route):
           <li>{icon("pin")} 3/41 O'Connell Street, Smithfield NSW 2164</li>
           <li>{icon("phone")} <a href="tel:+61421667118">0421 667 118</a></li>
           <li>{icon("mail")} <a href="mailto:albert@albertsautoelectrical.com.au">albert@albertsautoelectrical.com.au</a></li>
-          <li>{icon("clock")} Mon–Fri 9:00–5:00 · Sat by appointment · Sun closed</li>
+          <li>{icon("clock")} Mon-Fri 9:00-5:00 · Sat by appointment · Sun closed</li>
         </ul>
       </div>
     </div>
@@ -272,7 +272,7 @@ def footer(route):
   <div class="wa-widget">
     <div class="wa-bubble" data-wa-bubble hidden>
       <button type="button" class="wa-close" data-wa-close aria-label="Dismiss">&times;</button>
-      <p><strong>Need a quote?</strong> Message us on WhatsApp — send us a photo of the problem and we'll point you in the right direction.</p>
+      <p><strong>Need a quote?</strong> Message us on WhatsApp and send us a photo of the problem. We'll point you in the right direction.</p>
       <a class="wa-bubble-link" href="{WHATSAPP_URL}" target="_blank" rel="noopener">Start a chat {icon("arrow")}</a>
     </div>
     <a class="wa-btn" href="{WHATSAPP_URL}" target="_blank" rel="noopener" data-wa-open aria-label="Message Albert's Auto Electrical on WhatsApp">
@@ -423,7 +423,7 @@ def rewrite(route, content):
     p = pfx(route)
     content = re.sub(r'((?:src|href|data-full)=")assets/', r"\1" + p + "assets/", content)
 
-    # srcset holds several URLs in one attribute — prefix each of them
+    # srcset holds several URLs in one attribute, so prefix each of them
     def srcset_repl(m):
         inner = re.sub(r"(^|,\s*)assets/", lambda mm: mm.group(1) + p + "assets/", m.group(1))
         return 'srcset="' + inner + '"'
@@ -461,7 +461,7 @@ def build_blog_archive():
       <div class="container">
         {crumbs(route, "Blog")}
         <h1>From the workshop floor</h1>
-        <p>Project builds, restorations, fixes and updates — {len(BLOG)} stories from Albert's bench, straight from our original blog.</p>
+        <p>Project builds, restorations, fixes and updates: {len(BLOG)} stories from Albert's bench, straight from our original blog.</p>
         <div class="hero-actions">
           <a class="btn btn-solid" href="tel:+61421667118">{icon("phone")} 0421 667 118</a>
           <a class="btn btn-ghost" href="{href(route, 'contact-us')}">Book Your Car In</a>
@@ -472,18 +472,18 @@ def build_blog_archive():
     <section class="section">
       <div class="container">
         <div class="blog-tools reveal">
-          <input type="search" data-blog-search placeholder="Search {len(BLOG)} projects — try “Skyline”, “rewire”, “aircon”…" aria-label="Search blog posts">
+          <input type="search" data-blog-search placeholder="Search {len(BLOG)} projects: try “Skyline”, “rewire”, “aircon”…" aria-label="Search blog posts">
           <span class="blog-count" data-blog-count></span>
         </div>
         <div class="grid-3" data-blog-grid>
 {cards}
         </div>
-        <p class="no-results" data-blog-empty hidden>No projects match that search — try another word, or call us on 0421 667 118.</p>
+        <p class="no-results" data-blog-empty hidden>No projects match that search. Try another word, or call us on 0421 667 118.</p>
       </div>
     </section>
 
-    {cta_band(route, "Your car could be our next project", "See something like your build? Book it in — every car gets the same attention to detail.", "Book a Service")}'''
-    return page_shell(route, "Blog | Albert's Auto Electrical — Workshop Projects & Updates",
+    {cta_band(route, "Your car could be our next project", "See something like your build? Book it in. Every car gets the same attention to detail.", "Book a Service")}'''
+    return page_shell(route, "Blog | Albert's Auto Electrical, Workshop Projects & Updates",
                       "Project builds, restorations, wiring jobs and fixes from the Albert's Auto Electrical workshop in Smithfield NSW.",
                       "blog", main,
                       og_image=img_local("blog", BLOG[0]["slug"], BLOG[0]["image"]))
@@ -493,7 +493,7 @@ def build_blog_post(b, idx):
     route = b["slug"]
     img = img_local("blog", b["slug"], b["image"])
     img_tag = img if img.startswith("http") else asset(route, img)
-    paras = paragraphs(b.get("text", "")) or ["This project speaks for itself — see the photos below, or call Albert on 0421 667 118 to talk about your build."]
+    paras = paragraphs(b.get("text", "")) or ["This project speaks for itself. See the photos below, or call Albert on 0421 667 118 to talk about your build."]
     body = "\n".join(f"<p>{esc(p)}</p>" for p in paras)
     # inline figures: dedupe size variants of the same base photo, local only
     seen_bases = set()
@@ -539,7 +539,7 @@ def build_blog_post(b, idx):
 {prev_next(route, "", BLOG, idx, lambda x: x['title'])}
       </div>
     </section>'''
-    desc = excerpt(b.get("text", ""), 155) or f"Workshop project at Albert's Auto Electrical — {b['title']}."
+    desc = excerpt(b.get("text", ""), 155) or f"Workshop project at Albert's Auto Electrical: {b['title']}."
     return page_shell(route, f"{b['title']} | Albert's Auto Electrical", desc, "blog", main,
                       og_image=img if img.startswith("http") else SITE + "/" + img)
 
@@ -584,7 +584,7 @@ def build_testimonial_item(t, idx):
       <div class="container" style="max-width:860px;">
         <article class="t-card reveal" style="padding:38px;">
           <div class="stars" aria-label="5 star rating">{'<svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg>' * 5}</div>
-          <blockquote style="font-size:17.5px;">{esc(body) if body else "5-star Google review — thank you for trusting Albert's Auto Electrical with your vehicle."}</blockquote>
+          <blockquote style="font-size:17.5px;">{esc(body) if body else "5-star Google review. Thank you for trusting Albert's Auto Electrical with your vehicle."}</blockquote>
           {tags}
           <div class="t-who"><div class="t-avatar">{esc(name[0].upper())}</div><div><div class="nm">{esc(name)}</div><div class="src">Google Review</div></div></div>
         </article>
@@ -618,7 +618,7 @@ def build_testimonial_archive_extras(route):
         <div class="section-head center reveal">
           <span class="kicker">Review Archive</span>
           <h2>Every review, on the record</h2>
-          <p>{len(TESTIMONIALS)} verified Google reviews — click any to read the full write-up.</p>
+          <p>{len(TESTIMONIALS)} verified Google reviews. Click any to read the full write-up.</p>
         </div>
         <div class="grid-3 t-mini-grid">
 {''.join(cards)}
@@ -651,7 +651,7 @@ def build_gallery_archive(route):
         <div class="section-head center reveal">
           <span class="kicker">Project Archive</span>
           <h2>Every photo from the original gallery</h2>
-          <p>{len(tiles)} shots from the workshop — click any for its own page.</p>
+          <p>{len(tiles)} shots from the workshop. Click any for its own page.</p>
         </div>
         <div class="a-grid">
 {''.join(tiles)}
@@ -693,7 +693,7 @@ def build_gallery_item(g, idx):
       </div>
     </section>'''
     return page_shell(route, f"{name} | Albert's Auto Electrical Gallery",
-                      f"{name} — a project from the Albert's Auto Electrical workshop in Smithfield NSW.",
+                      f"{name}, a project from the Albert's Auto Electrical workshop in Smithfield NSW.",
                       "gallery", main, og_image=img if img.startswith("http") else SITE + "/" + img)
 
 
@@ -736,7 +736,7 @@ def service_detail(route, kicker, h1, lead, img, badge, checks, brands=None, ext
       </div>
     </section>
 
-    {cta_band(route, "Get it done once, done right", "Tell us what you need — you'll get honest advice and a fair-price estimate.")}'''
+    {cta_band(route, "Get it done once, done right", "Tell us what you need and you'll get honest advice and a fair-price estimate.")}'''
 
 
 def build_serve_detail(slug):
@@ -744,9 +744,9 @@ def build_serve_detail(slug):
     if slug == "performance-cars":
         content = service_detail(
             route, "Service 01", "Performance Cars",
-            "High-quality auto electrical services for performance cars — from street builds to full drag and circuit machines, wired to survive heat, vibration and 7,000 rpm.",
+            "High-quality auto electrical services for performance cars, from street builds to full drag and circuit machines, wired to survive heat, vibration and 7,000 rpm.",
             "assets/img/workshop-wide.jpg", "Race-proven wiring",
-            ["ECU supply, fitting &amp; wiring — plug-in and wire-in",
+            ["ECU supply, fitting &amp; wiring, plug-in and wire-in",
              "Engine conversions &amp; half-cut rewiring",
              "Custom and piggyback ECUs &amp; engine management upgrades",
              "Performance wiring, body &amp; engine harnesses",
@@ -756,18 +756,18 @@ def build_serve_detail(slug):
     elif slug == "classic-cars":
         content = service_detail(
             route, "Service 02", "Classic Cars",
-            "Reliable, trustworthy auto electrical work for classics — every rewire planned, labelled and routed the way the factory wish it had.",
+            "Reliable, trustworthy auto electrical work for classics: every rewire planned, labelled and routed the way the factory wished it had.",
             "assets/img/gallery-1.jpg", "Factory-neat looms",
-            ["Complete full rewires — body, engine &amp; lighting circuits",
+            ["Complete full rewires: body, engine &amp; lighting circuits",
              "Repair &amp; restoration of tired or butchered wiring",
              "Custom wiring harnesses built in-house",
              "Gauge, instrument &amp; dashboard rewiring",
              "Period-correct finishes with modern reliability"])
-        desc = "Classic car rewires and custom wiring harnesses — period-correct work with modern reliability, from Albert's Auto Electrical."
+        desc = "Classic car rewires and custom wiring harnesses: period-correct work with modern reliability, from Albert's Auto Electrical."
     elif slug == "cars-trucks-and-four-wheel-drives":
         content = service_detail(
             route, "Service 03", "Cars, Trucks &amp; Four-Wheel Drives",
-            "Reliable auto electrical services that solve everyday problems — and proper 4WD and truck accessories fitted once, fitted right.",
+            "Reliable auto electrical services that solve everyday problems, plus proper 4WD and truck accessories fitted once, fitted right.",
             "assets/img/fourby.jpg", "Tour-ready 4WD fit-outs",
             ["Batteries, alternators &amp; starter motors",
              "Diagnostics &amp; engine light faults",
@@ -779,23 +779,23 @@ def build_serve_detail(slug):
     elif slug == "installation-of-a-c-units-air-con-service":
         content = service_detail(
             route, "Service 04", "Installation of A/C Units &amp; Air-Con Service",
-            "Keep your cool on the road — expert vehicle air-conditioning installation, servicing and repair for cars, 4WDs and trucks.",
+            "Keep your cool on the road with expert vehicle air-conditioning installation, servicing and repair for cars, 4WDs and trucks.",
             "assets/img/ac-install.jpg", "Ice-cold all summer",
             ["A/C system installation &amp; retrofits",
              "Air-con regas, leak testing &amp; diagnosis",
              "Compressor, condenser &amp; blower repairs",
              "Cabin air &amp; heating faults sorted"])
-        desc = "Vehicle air-conditioning installation, service and repair in Smithfield NSW — stay cool with Albert's Auto Electrical."
+        desc = "Vehicle air-conditioning installation, service and repair in Smithfield NSW. Stay cool with Albert's Auto Electrical."
     else:  # tires-wheels -> Engine Services (original title/content)
         content = service_detail(
             route, "Service 05", "Engine Services",
-            "One of the simplest, most effective and inexpensive ways to protect the life of your car — especially its engine — is regular servicing. An oil change can really change your mood. And it will definitely change your oil.",
+            "One of the simplest, most effective and inexpensive ways to protect the life of your car, especially its engine, is regular servicing. An oil change can really change your mood. And it will definitely change your oil.",
             "assets/img/workshop-wide.jpg", "Preventative maintenance",
             ["Oil changes &amp; filter replacements",
              "Preventative maintenance schedules",
              "30+ common vehicle repairs and growing",
              "Diagnostics before small problems become big ones"])
-        desc = "Engine services and preventative maintenance at Albert's Auto Electrical — oil changes, filters and the checks that prevent breakdowns."
+        desc = "Engine services and preventative maintenance at Albert's Auto Electrical: oil changes, filters and the checks that prevent breakdowns."
     return page_shell(route, page_title_for(slug), desc, "services", content)
 
 
@@ -807,23 +807,23 @@ def page_title_for(slug):
         "installation-of-a-c-units-air-con-service": "Installation of A/C Units (Air Con Service)",
         "tires-wheels": "Engine Services",
     }
-    return f"{names[slug]} | Services — Albert's Auto Electrical"
+    return f"{names[slug]} | Services | Albert's Auto Electrical"
 
 
 # ---------------------------------------------------------------- new: FAQ + pricing
 FAQ_ITEMS = [
     ("How long will it take to complete the repairs?", "We try to complete most repairs the same day. If this is not possible, we will provide you with special transportation arrangements."),
-    ("How much will it cost?", "We try to give a fair-price estimate before work begins — tell us your vehicle and symptoms, and you'll know where you stand before we turn a spanner."),
-    ("Is there a warranty on the repairs?", "Albert's Auto Electrical stands behind its workmanship — quality repairs backed by our guarantee. Call us to discuss the specifics of your job."),
-    ("Do I have an option to pickup and deliver my vehicle?", "Yes — arrangements can be made for pickup and delivery of your vehicle. Mention it when you book."),
-    ("What types of vehicles do you service?", "Performance cars, classic cars, daily drivers, 4WDs, trucks and light commercials — all makes and models."),
+    ("How much will it cost?", "We try to give a fair-price estimate before work begins. Tell us your vehicle and symptoms, and you'll know where you stand before we turn a spanner."),
+    ("Is there a warranty on the repairs?", "Albert's Auto Electrical stands behind its workmanship, with quality repairs backed by our guarantee. Call us to discuss the specifics of your job."),
+    ("Do I have an option to pickup and deliver my vehicle?", "Yes, arrangements can be made for pickup and delivery of your vehicle. Mention it when you book."),
+    ("What types of vehicles do you service?", "Performance cars, classic cars, daily drivers, 4WDs, trucks and light commercials: all makes and models."),
     ("What forms of payment do you accept?", "Call us on 0421 667 118 to confirm payment options for your job."),
-    ("How often should I get my car serviced?", "Follow your manufacturer's logbook intervals — and if something electrical is acting up between services, don't wait for it to get worse."),
-    ("My car's battery light just came on — what should I do?", "The battery or charging system needs attention. Have it checked promptly — a dying alternator can leave you stranded."),
-    ("Can you install accessories like driving lights or a UHF radio?", "Absolutely — driving lights, spotties, light bars, UHF/CB radios, dual battery systems, brake controllers and more."),
-    ("Do you work on race cars and performance builds?", "Yes — ECU supply and fitting, full rewires, engine conversions and engine management from brands like Haltech, FuelTech and MicroTech."),
-    ("Do you service air conditioning?", "Yes — A/C installation, regas, leak testing and repairs for cars, 4WDs and trucks."),
-    ("How do I book my car in?", "Call 0421 667 118, email albert@albertsautoelectrical.com.au, or use the booking form on our contact page. Monday to Friday 9am–5pm, Saturdays by appointment."),
+    ("How often should I get my car serviced?", "Follow your manufacturer's logbook intervals, and if something electrical is acting up between services, don't wait for it to get worse."),
+    ("My car's battery light just came on. What should I do?", "The battery or charging system needs attention. Have it checked promptly, because a dying alternator can leave you stranded."),
+    ("Can you install accessories like driving lights or a UHF radio?", "Absolutely. Driving lights, spotties, light bars, UHF/CB radios, dual battery systems, brake controllers and more."),
+    ("Do you work on race cars and performance builds?", "Yes. ECU supply and fitting, full rewires, engine conversions and engine management from brands like Haltech, FuelTech and MicroTech."),
+    ("Do you service air conditioning?", "Yes. A/C installation, regas, leak testing and repairs for cars, 4WDs and trucks."),
+    ("How do I book my car in?", "Call 0421 667 118, email albert@albertsautoelectrical.com.au, or use the booking form on our contact page. Monday to Friday 9am-5pm, Saturdays by appointment."),
 ]
 
 
@@ -835,7 +835,7 @@ def build_faq():
             <div class="acc-a"><p>{esc(a)}</p></div>
           </div>''' for q, a in FAQ_ITEMS)
     main = page_hero(route, "FAQ", "Frequently asked questions",
-                     "The questions we hear most at the counter — answered straight. Anything else, call Albert on 0421 667 118.") + f'''
+                     "The questions we hear most at the counter, answered straight. Anything else, call Albert on 0421 667 118.") + f'''
 
     <section class="section">
       <div class="container">
@@ -843,12 +843,12 @@ def build_faq():
 {items}
         </div>
         <div style="text-align:center; margin-top:44px;">
-          <p style="color:var(--text-soft);">Still stuck? <a href="{href(route, 'contact-us')}" style="font-weight:700;">Ask us directly</a> — real advice, no charge.</p>
+          <p style="color:var(--text-soft);">Still stuck? <a href="{href(route, 'contact-us')}" style="font-weight:700;">Ask us directly</a>. Real advice, no charge.</p>
         </div>
       </div>
     </section>
 
-    {cta_band(route, "Have a car repair question?", "Get your automotive questions answered by a real auto electrician — not a phone menu.")}'''
+    {cta_band(route, "Have a car repair question?", "Get your automotive questions answered by a real auto electrician, not a phone menu.")}'''
     return page_shell(route, "FAQ | Albert's Auto Electrical",
                       "Answers to common questions about repairs, pricing, bookings, warranties and servicing at Albert's Auto Electrical, Smithfield NSW.",
                       "contact", main)
@@ -867,7 +867,7 @@ def build_pricing():
             <div class="coupon-what">{w}</div>
             <div class="coupon-name">{n}</div>
             <p>{d}</p>
-            <span class="coupon-exp">Archived offer — expired 2019</span>
+            <span class="coupon-exp">Archived offer, expired 2019</span>
           </article>''' for v, w, n, d in coupons)
     rows = "".join(f'''
             <tr><td>{s}</td><td>{p}</td></tr>''' for s, p in [
@@ -880,7 +880,7 @@ def build_pricing():
         ("4WD Accessory Fit-outs", "Quote per build"),
     ])
     main = page_hero(route, "Pricing & Coupons", "Fair prices, upfront quotes",
-                     "No surprises on the invoice — you'll know the price before we start. Below: the coupon offers and guide prices carried over from the original site.") + f'''
+                     "No surprises on the invoice. You'll know the price before we start. Below: the coupon offers and guide prices carried over from the original site.") + f'''
 
     <section class="section">
       <div class="container">
@@ -892,7 +892,7 @@ def build_pricing():
         <div class="section-head center reveal" style="margin-top:72px;">
           <span class="kicker">Guide Prices</span>
           <h2>What things cost</h2>
-          <p>Indicative starting prices — your exact quote depends on the vehicle and the job. Always confirmed before work begins.</p>
+          <p>Indicative starting prices. Your exact quote depends on the vehicle and the job. Always confirmed before work begins.</p>
         </div>
         <div class="price-wrap reveal">
           <table class="price-table">
@@ -902,7 +902,7 @@ def build_pricing():
       </div>
     </section>
 
-    {cta_band(route, "Get your exact price", "One call is all it takes — describe the job and get a straight answer.")}'''
+    {cta_band(route, "Get your exact price", "One call is all it takes. Describe the job and get a straight answer.")}'''
     return page_shell(route, "Pricing & Coupons | Albert's Auto Electrical",
                       "Fair-price estimates and archived coupon offers from Albert's Auto Electrical, Smithfield NSW.",
                       "contact", main)
@@ -917,7 +917,7 @@ def build_shop_notice(route, title, heading, blurb):
         <div class="card reveal" style="padding:48px 40px;">
           <div class="icon" style="margin-inline:auto;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1.6"/><circle cx="19" cy="21" r="1.6"/><path d="M2 3h3l2.6 12.4a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 2-1.6L22 7H6"/></svg></div>
           <h3>Nothing on the shelf just yet</h3>
-          <p style="color:var(--text-soft); margin-top:10px;">The original site's store only ever stocked WooCommerce demo samples — we've left the clutter out. Everything Albert offers is a service, and it starts with a phone call.</p>
+          <p style="color:var(--text-soft); margin-top:10px;">The original site's store only ever stocked WooCommerce demo samples, so we've left the clutter out. Everything Albert offers is a service, and it starts with a phone call.</p>
           <div style="display:flex; gap:14px; justify-content:center; margin-top:26px; flex-wrap:wrap;">
             <a class="btn btn-solid" href="tel:+61421667118">{icon("phone")} 0421 667 118</a>
             <a class="btn btn-outline" href="{href(route, 'serve')}">Browse Services</a>
@@ -926,7 +926,7 @@ def build_shop_notice(route, title, heading, blurb):
       </div>
     </section>'''
     return page_shell(route, f"{title} | Albert's Auto Electrical",
-                      f"{blurb} Albert's Auto Electrical is a service workshop — call 0421 667 118.",
+                      f"{blurb} Albert's Auto Electrical is a service workshop. Call 0421 667 118.",
                       "", main)
 
 
@@ -935,16 +935,16 @@ def build_estimate(e, idx):
     route = "service-estimate/" + e["slug"]
     name = e.get("title") or e["slug"].replace("-", " ").title()
     main = page_hero(route, "Estimate", name,
-                     f"Fair-price estimates for {name.lower()} — confirmed before any work begins.") + f'''
+                     f"Fair-price estimates for {name.lower()}, confirmed before any work begins.") + f'''
 
     <section class="section">
       <div class="container" style="max-width:760px;">
         <div class="card reveal" style="padding:40px;">
           <h3 style="font-size:22px;">How your estimate works</h3>
           <ul class="check-list" style="margin-top:20px;">
-            <li>{icon("check")} <span><strong>Tell us the symptom</strong> — by phone, email or the booking form. Photos help.</span></li>
-            <li>{icon("check")} <span><strong>We inspect and diagnose</strong> — so you're paying for the real fix, not a guess.</span></li>
-            <li>{icon("check")} <span><strong>You get a fair-price quote</strong> — before any work begins. No surprises.</span></li>
+            <li>{icon("check")} <span><strong>Tell us the symptom</strong> by phone, email or the booking form. Photos help.</span></li>
+            <li>{icon("check")} <span><strong>We inspect and diagnose</strong>, so you're paying for the real fix, not a guess.</span></li>
+            <li>{icon("check")} <span><strong>You get a fair-price quote</strong> before any work begins. No surprises.</span></li>
           </ul>
           <div style="display:flex; gap:14px; margin-top:28px; flex-wrap:wrap;">
             <a class="btn btn-solid" href="tel:+61421667118">{icon("phone")} Call 0421 667 118</a>
@@ -955,7 +955,7 @@ def build_estimate(e, idx):
         <div style="text-align:center; margin-top:30px;"><a class="card-link" href="{href(route, 'serve')}">Browse all services {icon("arrow")}</a></div>
       </div>
     </section>'''
-    return page_shell(route, f"{name} — Estimate | Albert's Auto Electrical",
+    return page_shell(route, f"{name} Estimate | Albert's Auto Electrical",
                       f"Get a fair-price estimate for {name.lower()} from Albert's Auto Electrical, Smithfield NSW. Call 0421 667 118.",
                       "services", main)
 
@@ -963,13 +963,13 @@ def build_estimate(e, idx):
 # ---------------------------------------------------------------- 404
 def build_404():
     """Self-contained: GitHub Pages serves 404.html at arbitrary URL paths,
-    so every reference must be absolute — relative links/assets would break."""
+    so every reference must be absolute: relative links/assets would break."""
     return f'''<!DOCTYPE html>
 <html lang="en-AU">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>404 — Page Not Found | Albert's Auto Electrical</title>
+  <title>404 | Page Not Found | Albert's Auto Electrical</title>
   <link rel="icon" type="image/png" href="{SITE}/assets/img/logo.png">
   <style>
     body {{ margin: 0; min-height: 100vh; display: grid; place-items: center;
@@ -987,7 +987,7 @@ def build_404():
 <body>
   <div>
     <img class="logo" src="{SITE}/assets/img/logo.png" alt="Albert's Auto Electrical">
-    <h1>404 — dead wire</h1>
+    <h1>404: dead wire</h1>
     <p>That circuit doesn't lead anywhere. Let's get you back to a live one.</p>
     <a class="btn solid" href="{SITE}/">Back to Home</a>
     <a class="btn ghost" href="{SITE}/contact-us/">Contact Us</a>
@@ -1056,27 +1056,27 @@ def main():
     # core pages rebuilt from existing content with original-URL links
     built.append(write_page("", core_page("", "index.html",
         "Albert's Auto Electrical | Auto Electrician Smithfield & Sydney NSW",
-        "Albert's Auto Electrical — specialist auto electrician in Smithfield, Sydney. Performance cars, classic car rewires, 4WD accessories, truck lighting, air conditioning. Call 0421 667 118.",
+        "Albert's Auto Electrical: specialist auto electrician in Smithfield, Sydney. Performance cars, classic car rewires, 4WD accessories, truck lighting, air conditioning. Call 0421 667 118.",
         "home", "assets/img/hero-car.png")))
     built.append(write_page("about-us", core_page("about-us", "about.html",
-        "About Us | Albert's Auto Electrical — Sydney Auto Electrician",
-        "Founded on a passion for cars — meet Managing Director Albert Costagliola and the values behind 25 years of quality auto electrical workmanship across NSW.",
+        "About Us | Albert's Auto Electrical, Sydney Auto Electrician",
+        "Founded on a passion for cars. Meet Managing Director Albert Costagliola and the values behind 25 years of quality auto electrical workmanship across NSW.",
         "about")))
     built.append(write_page("serve", core_page("serve", "services.html",
-        "Auto Electrical Services | Performance, Classic, 4WD & Air-Con — Albert's Auto Electrical",
+        "Auto Electrical Services | Performance, Classic, 4WD & Air-Con | Albert's Auto Electrical",
         "Specialist auto electrical services in Sydney: performance ECU and engine management, classic car rewires, 4WD accessories, truck lighting, air conditioning and more.",
         "services")))
     built.append(write_page("testimonial", core_page("testimonial", "testimonials.html",
-        "Testimonials | Albert's Auto Electrical — Sydney Reviews",
-        "What Sydney drivers say about Albert's Auto Electrical — professionalism, punctuality, quality and value. Real Google reviews.",
+        "Testimonials | Albert's Auto Electrical, Sydney Reviews",
+        "What Sydney drivers say about Albert's Auto Electrical, professionalism, punctuality, quality and value. Real Google reviews.",
         "testimonials")))
     built.append(write_page("locations", core_page("locations", "locations.html",
-        "Locations | Areas We Service Across Sydney — Albert's Auto Electrical",
-        "Servicing Smithfield and suburbs across Sydney — Auburn, Blacktown, Camden, Campbelltown, Bankstown, Fairfield, Cumberland, Liverpool, Parramatta, Penrith and the Hills Shire.",
+        "Locations | Areas We Service Across Sydney | Albert's Auto Electrical",
+        "Servicing Smithfield and suburbs across Sydney: Auburn, Blacktown, Camden, Campbelltown, Bankstown, Fairfield, Cumberland, Liverpool, Parramatta, Penrith and the Hills Shire.",
         "locations")))
     built.append(write_page("contact-us", core_page("contact-us", "contact.html",
-        "Contact Us | Book a Service — Albert's Auto Electrical Smithfield",
-        "Book your car in with Albert's Auto Electrical. Call 0421 667 118, visit 3/41 O'Connell Street Smithfield NSW, or send a booking request. Mon–Fri 9–5, Sat by appointment.",
+        "Contact Us | Book a Service | Albert's Auto Electrical Smithfield",
+        "Book your car in with Albert's Auto Electrical. Call 0421 667 118, visit 3/41 O'Connell Street Smithfield NSW, or send a booking request. Mon-Fri 9am-5pm, Sat by appointment.",
         "contact")))
 
     # serve detail pages
@@ -1095,8 +1095,8 @@ def main():
     t_main = rewrite(route, extract_main("testimonials.html"))
     t_main += build_testimonial_archive_extras(route)
     built.append(write_page(route, page_shell(route,
-        "Testimonials | Albert's Auto Electrical — Sydney Reviews",
-        "What Sydney drivers say about Albert's Auto Electrical — professionalism, punctuality, quality and value. Real Google reviews.",
+        "Testimonials | Albert's Auto Electrical, Sydney Reviews",
+        "What Sydney drivers say about Albert's Auto Electrical, professionalism, punctuality, quality and value. Real Google reviews.",
         "testimonials", t_main)))
     for i, t in enumerate(TESTIMONIALS):
         built.append(write_page("testimonial/" + t["slug"], build_testimonial_item(t, i)))
@@ -1107,8 +1107,8 @@ def main():
     g_main = rewrite(route, extract_main("gallery.html"))
     g_main += build_gallery_archive(route)
     built.append(write_page(route, page_shell(route,
-        "Gallery | Our Work — Albert's Auto Electrical",
-        "Photos from the Albert's Auto Electrical workshop in Smithfield — performance wiring, classic rewires, 4WD fit-outs and more.",
+        "Gallery | Our Work | Albert's Auto Electrical",
+        "Photos from the Albert's Auto Electrical workshop in Smithfield: performance wiring, classic rewires, 4WD fit-outs and more.",
         "gallery", g_main)))
     for i, g in enumerate(GALLERY):
         built.append(write_page("gallery/" + g["slug"], build_gallery_item(g, i)))
@@ -1117,13 +1117,13 @@ def main():
     built.append(write_page("faq", build_faq()))
     built.append(write_page("pricing-coupons", build_pricing()))
     built.append(write_page("shop", build_shop_notice("shop", "Shop", "The shop is taking a rest",
-        "Albert's workshop is full of cars, not e-commerce boxes — the original store only ever held WooCommerce demo products, so we've kept the URL and dropped the clutter.")))
+        "Albert's workshop is full of cars, not e-commerce boxes, and the original store only ever held WooCommerce demo products, so we've kept the URL and dropped the clutter.")))
     built.append(write_page("cart", build_shop_notice("cart", "Cart", "Nothing in the cart",
-        "There's nothing to check out — everything Albert offers is a service, not a product.")))
+        "There's nothing to check out. Everything Albert offers is a service, not a product.")))
     built.append(write_page("checkout", build_shop_notice("checkout", "Checkout", "Nothing to check out",
-        "No products, no checkout — just honest auto electrical work.")))
+        "No products, no checkout, just honest auto electrical work.")))
     built.append(write_page("my-account", build_shop_notice("my-account", "My Account", "No account needed",
-        "You don't need an account to get great service — just a phone call.")))
+        "You don't need an account to get great service, just a phone call.")))
     for i, e in enumerate(ESTIMATES):
         built.append(write_page("service-estimate/" + e["slug"], build_estimate(e, i)))
 
@@ -1186,11 +1186,11 @@ def main():
     # tells GitHub Pages which domain serves the site (needs matching DNS records)
     with open(os.path.join(ROOT, "CNAME"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write(DOMAIN + "\n")
-    # skip Jekyll processing on GitHub Pages — output is served as-is
+    # skip Jekyll processing on GitHub Pages, so output is served as-is
     with open(os.path.join(ROOT, ".nojekyll"), "w", encoding="utf-8") as fh:
         fh.write("")
 
-    # exact list of what this build produced — tools/audit.py crawls this
+    # exact list of what this build produced. tools/audit.py crawls this
     # instead of walking the disk (Windows can't enumerate the longest folders)
     with open(os.path.join(ROOT, ".build-manifest.json"), "w", encoding="utf-8") as fh:
         json.dump(MANIFEST, fh, ensure_ascii=False, indent=1)

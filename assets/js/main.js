@@ -1,4 +1,4 @@
-/* Albert's Auto Electrical — site behaviour + interactivity */
+/* Albert's Auto Electrical - site behaviour + interactivity */
 (function () {
   "use strict";
 
@@ -216,7 +216,7 @@
     window.addEventListener("resize", update);
     update();
 
-    /* autoplay — pauses on hover, stops when off-screen */
+    /* autoplay: pauses on hover, stops when off-screen */
     var visible = true;
     var autoTimer = null;
     function startAuto() {
@@ -393,7 +393,7 @@
     }
     syncNotes();
 
-    var photo = null;            // { blob, name } — the processed file to send
+    var photo = null;            // { blob, name } - the processed file to send
     var previewUrl = null;
     var fileInput = form.querySelector('input[type="file"]');
     var zone = form.querySelector("[data-attach]");
@@ -468,12 +468,12 @@
       if (!file) return;
       if (!/^image\//.test(file.type)) {
         clearPhoto();
-        setHint("That file isn't a picture — please choose a JPG or PNG photo.", true);
+        setHint("That file isn't a picture. Please choose a JPG or PNG photo.", true);
         return;
       }
       if (file.size > PHOTO_MAX_MB * 1024 * 1024) {
         clearPhoto();
-        setHint("That photo is over " + PHOTO_MAX_MB + " MB — please choose a smaller one.", true);
+        setHint("That photo is over " + PHOTO_MAX_MB + " MB. Please choose a smaller one.", true);
         return;
       }
       shrink(file).then(function (blob) {
@@ -532,7 +532,7 @@
           "Details:",
           data.get("message") || "-"
         ];
-        var subject = "Booking request — " + (data.get("service") || "General enquiry") + " (" + data.get("name") + ")";
+        var subject = "Booking request: " + (data.get("service") || "General enquiry") + " (" + data.get("name") + ")";
         window.location.href =
           "mailto:albert@albertsautoelectrical.com.au?subject=" + encodeURIComponent(subject) +
           "&body=" + encodeURIComponent(lines.join("\n"));
@@ -575,7 +575,7 @@
         .catch(function () {
           clearTimeout(timer);
           setBusy(false);
-          setStatus("Sorry — that didn't send. Please try again, or call 0421 667 118.", true);
+          setStatus("Sorry, that didn't send. Please try again, or call 0421 667 118.", true);
         });
     });
   }

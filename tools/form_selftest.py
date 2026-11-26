@@ -24,7 +24,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
-import serve  # noqa: E402  — the site's own server handler (long-path aware)
+import serve  # noqa: E402  - the site's own server handler (long-path aware)
 
 HARNESS = "_form-selftest.html"
 SHOT_HARNESS = "_form-shot.html"
@@ -39,7 +39,7 @@ def find_edge():
                  shutil.which("msedge") or "", shutil.which("chrome") or ""]:
         if cand and os.path.isfile(cand):
             return cand
-    sys.exit("Edge/Chrome not found — set EDGE_PATH")
+    sys.exit("Edge/Chrome not found: set EDGE_PATH")
 
 
 EDGE = find_edge()
@@ -164,7 +164,7 @@ HARNESS_JS = r"""
   }
   window.addEventListener("error", function (e) { post("WINDOW ERROR " + e.message); });
   window.addEventListener("unhandledrejection", function (e) { post("WINDOW REJECTION " + (e.reason && e.reason.stack || e.reason)); });
-  function check(ok, name, detail) { if (!ok) failed++; say((ok ? "PASS " : "FAIL ") + name + " — " + detail); }
+  function check(ok, name, detail) { if (!ok) failed++; say((ok ? "PASS " : "FAIL ") + name + " - " + detail); }
   var frame = document.getElementById("f");
   function load() {
     return new Promise(function (res) { frame.onload = function () { res(frame); }; frame.src = "/contact-us/?t=" + Date.now(); });
@@ -429,7 +429,7 @@ def run_live(site_port, report_url):
                 print("  " + line)
                 ok = ok or line.startswith("RESULT 0")
     if not REPORT:
-        print("  NO REPORT — the test page did not run")
+        print("  NO REPORT - the test page did not run")
     return ok
 
 
@@ -445,7 +445,7 @@ def main():
 
     os.chdir(ROOT)
     if "data-booking-form" not in open("contact-us/index.html", encoding="utf-8").read():
-        sys.exit("contact-us/index.html is out of date — run: python tools/build.py")
+        sys.exit("contact-us/index.html is out of date: run python tools/build.py")
 
     site, site_port = start(QuietSite)
     relay, relay_port = start(Relay)
@@ -466,7 +466,7 @@ def main():
         profiles.append(launch_edge([], "http://127.0.0.1:%d/%s" % (site_port, HARNESS)))
         wait_until(lambda: any("RESULT " in r for r in REPORT), 240)
         close_browser(profiles[-1])
-        report = "".join(REPORT).strip() or "NO REPORT — harness did not run"
+        report = "".join(REPORT).strip() or "NO REPORT - harness did not run"
         report = "\n".join(dict.fromkeys(line for line in report.split("\n") if line.strip()))
         print(report)
 
