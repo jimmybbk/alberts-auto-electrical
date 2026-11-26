@@ -16,6 +16,7 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -34,15 +35,25 @@ def safe(url):
     return urllib.parse.quote(url, safe="/:%?=&#$,@+;~!*'()[]")
 
 
-def fetch(url):
-    try:
-        req = urllib.request.Request(safe(url), headers={"User-Agent": "Mozilla/5.0"})
-        with urllib.request.urlopen(req, timeout=40) as r:
-            return r.status, r.read()
-    except urllib.error.HTTPError as e:
-        return e.code, e.read()
-    except Exception as e:  # noqa: BLE001
-        return 0, str(e).encode()
+TRANSIENT = {0, 429, 500, 502, 503, 504}   # CDN/origin hiccups, not site defects
+
+
+def fetch(url, attempts=4):
+    """GET with retries on transient server errors. 404s are returned at once."""
+    code, body = 0, b""
+    for i in range(attempts):
+        try:
+            req = urllib.request.Request(safe(url), headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=40) as r:
+                return r.status, r.read()
+        except urllib.error.HTTPError as e:
+            code, body = e.code, e.read()
+        except Exception as e:  # noqa: BLE001
+            code, body = 0, str(e).encode()
+        if code not in TRANSIENT:
+            return code, body
+        time.sleep(1.0 + i)  # backoff, then retry
+    return code, body
 
 
 with open(".build-manifest.json", encoding="utf-8") as fh:
