@@ -736,7 +736,7 @@ def service_detail(route, kicker, h1, lead, img, badge, checks, brands=None, ext
       </div>
     </section>
 
-    {cta_band(route, "Get it done once, done right", "Tell us what you need and you'll get honest advice and a fair-price estimate.")}'''
+    {cta_band(route, "Get it done once, done right", "Let us know what you need and you will get honest advice and a fair-price estimate.")}'''
 
 
 def build_serve_detail(slug):
@@ -767,7 +767,7 @@ def build_serve_detail(slug):
     elif slug == "cars-trucks-and-four-wheel-drives":
         content = service_detail(
             route, "Service 03", "Cars, Trucks &amp; Four-Wheel Drives",
-            "Reliable auto electrical services that solve everyday problems, plus proper 4WD and truck accessories fitted once, fitted right.",
+            "Auto electrical that works and a full range of 4WD/truck accessories. Fixed once, fixed right.",
             "assets/img/fourby.jpg", "Tour-ready 4WD fit-outs",
             ["Batteries, alternators &amp; starter motors",
              "Diagnostics &amp; engine light faults",
@@ -779,7 +779,7 @@ def build_serve_detail(slug):
     elif slug == "installation-of-a-c-units-air-con-service":
         content = service_detail(
             route, "Service 04", "Installation of A/C Units &amp; Air-Con Service",
-            "Keep your cool on the road with expert vehicle air-conditioning installation, servicing and repair for cars, 4WDs and trucks.",
+            "Be cool on the road. We can install, service, or repair vehicle air-conditioning in your car, 4WD, or truck.",
             "assets/img/ac-install.jpg", "Ice-cold all summer",
             ["A/C system installation &amp; retrofits",
              "Air-con regas, leak testing &amp; diagnosis",
@@ -789,7 +789,7 @@ def build_serve_detail(slug):
     else:  # tires-wheels -> Engine Services (original title/content)
         content = service_detail(
             route, "Service 05", "Engine Services",
-            "One of the simplest, most effective and inexpensive ways to protect the life of your car, especially its engine, is regular servicing. An oil change can really change your mood. And it will definitely change your oil.",
+            "One of the simplest ways of protecting the life of your car, especially the engine life, is servicing, which is also one of the most effective and cheapest ways. An oil change can really change your mood. And it will definitely change your oil.",
             "assets/img/workshop-wide.jpg", "Preventative maintenance",
             ["Oil changes &amp; filter replacements",
              "Preventative maintenance schedules",
@@ -812,18 +812,18 @@ def page_title_for(slug):
 
 # ---------------------------------------------------------------- new: FAQ + pricing
 FAQ_ITEMS = [
-    ("How long will it take to complete the repairs?", "We try to complete most repairs the same day. If this is not possible, we will provide you with special transportation arrangements."),
-    ("How much will it cost?", "We try to give a fair-price estimate before work begins. Tell us your vehicle and symptoms, and you'll know where you stand before we turn a spanner."),
+    ("How long will it take to complete the repairs?", "Most repairs are done the same day. If not possible, we arrange special transportation."),
+    ("How much will it cost?", "We are happy to give you a fair-price estimate before work begins. Tell us about your vehicle and its symptoms, and you will know where you stand before we turn a spanner."),
     ("Is there a warranty on the repairs?", "Albert's Auto Electrical stands behind its workmanship, with quality repairs backed by our guarantee. Call us to discuss the specifics of your job."),
-    ("Do I have an option to pickup and deliver my vehicle?", "Yes, arrangements can be made for pickup and delivery of your vehicle. Mention it when you book."),
-    ("What types of vehicles do you service?", "Performance cars, classic cars, daily drivers, 4WDs, trucks and light commercials: all makes and models."),
-    ("What forms of payment do you accept?", "Call us on 0421 667 118 to confirm payment options for your job."),
+    ("Do I have an option to pickup and deliver my vehicle?", "Yes, collection &amp; delivery of your vehicle can be arranged. Please ask when booking."),
+    ("What types of vehicles do you service?", "Performance cars, classic cars, daily drivers, 4WDs, trucks, and light commercials: all makes and models."),
+    ("What forms of payment do you accept?", "Call us on 0421 667 118 to confirm the payment options for your job."),
     ("How often should I get my car serviced?", "Follow your manufacturer's logbook intervals, and if something electrical is acting up between services, don't wait for it to get worse."),
-    ("My car's battery light just came on. What should I do?", "The battery or charging system needs attention. Have it checked promptly, because a dying alternator can leave you stranded."),
+    ("My car's battery light just came on. What should I do?", "Something is wrong with the battery or charging system. Get it checked out as soon as possible; you do not want to be stranded as a result of a dying alternator."),
     ("Can you install accessories like driving lights or a UHF radio?", "Absolutely. Driving lights, spotties, light bars, UHF/CB radios, dual battery systems, brake controllers and more."),
-    ("Do you work on race cars and performance builds?", "Yes. ECU supply and fitting, full rewires, engine conversions and engine management from brands like Haltech, FuelTech and MicroTech."),
+    ("Do you work on race cars and performance builds?", "Yes. ECU supply and fitting, full rewires, engine conversions, and engine management such as Haltech, FuelTech, MicroTech."),
     ("Do you service air conditioning?", "Yes. A/C installation, regas, leak testing and repairs for cars, 4WDs and trucks."),
-    ("How do I book my car in?", "Call 0421 667 118, email albert@albertsautoelectrical.com.au, or use the booking form on our contact page. Monday to Friday 9am-5pm, Saturdays by appointment."),
+    ("How do I book my car in?", "Call 0421 667 118 or email albert@albertsautoelectrical.com.au. Alternatively, fill in the booking form on our contact page. Monday to Friday 9am-5pm. Appointments are also available on Saturdays."),
 ]
 
 
@@ -848,7 +848,7 @@ def build_faq():
       </div>
     </section>
 
-    {cta_band(route, "Have a car repair question?", "Get your automotive questions answered by a real auto electrician, not a phone menu.")}'''
+    {cta_band(route, "Have a car repair question?", "Speak to a real auto electrician, not a phone menu, to get your automotive answers.")}'''
     return page_shell(route, "FAQ | Albert's Auto Electrical",
                       "Answers to common questions about repairs, pricing, bookings, warranties and servicing at Albert's Auto Electrical, Smithfield NSW.",
                       "contact", main)
@@ -859,7 +859,7 @@ def build_pricing():
     coupons = [
         ("$10 OFF", "Repairs!", "New Customer Coupon", "Present this coupon and receive $10 off any service."),
         ("$15 OFF", "Maintenance!", "Standard Oil Change", "Present this coupon and receive $15 off a standard oil change."),
-        ("$25 OFF", "Brake Service!", "Front or Rear Brake Pads", "Present this coupon and receive $25 off front or rear brake pads."),
+        ("$25 OFF", "Brake Service!", "Front or Rear Brake Pads", "Save $25 off front or rear brake pads with this coupon."),
     ]
     coupon_html = "".join(f'''
           <article class="coupon-card reveal">
@@ -880,14 +880,14 @@ def build_pricing():
         ("4WD Accessory Fit-outs", "Quote per build"),
     ])
     main = page_hero(route, "Pricing & Coupons", "Fair prices, upfront quotes",
-                     "No surprises on the invoice. You'll know the price before we start. Below: the coupon offers and guide prices carried over from the original site.") + f'''
+                     "No surprises with the invoice. You know the prices beforehand. Below: the coupon offers and prices from the old site.") + f'''
 
     <section class="section">
       <div class="container">
         <div class="grid-3">
 {coupon_html}
         </div>
-        <p class="reveal" style="text-align:center; color:var(--text-soft); margin-top:18px; font-size:14px;">These coupons are archived from the original site (expired November 2019). For current specials, call <a href="tel:+61421667118"><strong>0421 667 118</strong></a>.</p>
+        <p class="reveal" style="text-align:center; color:var(--text-soft); margin-top:18px; font-size:14px;">Archive of coupons from the original site (expired November 2019): call for specials. <a href="tel:+61421667118"><strong>0421 667 118</strong></a>.</p>
 
         <div class="section-head center reveal" style="margin-top:72px;">
           <span class="kicker">Guide Prices</span>
@@ -902,7 +902,7 @@ def build_pricing():
       </div>
     </section>
 
-    {cta_band(route, "Get your exact price", "One call is all it takes. Describe the job and get a straight answer.")}'''
+    {cta_band(route, "Get your exact price", "One call, that is all it takes; describe the job and get a straight answer.")}'''
     return page_shell(route, "Pricing & Coupons | Albert's Auto Electrical",
                       "Fair-price estimates and archived coupon offers from Albert's Auto Electrical, Smithfield NSW.",
                       "contact", main)
@@ -917,7 +917,7 @@ def build_shop_notice(route, title, heading, blurb):
         <div class="card reveal" style="padding:48px 40px;">
           <div class="icon" style="margin-inline:auto;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1.6"/><circle cx="19" cy="21" r="1.6"/><path d="M2 3h3l2.6 12.4a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 2-1.6L22 7H6"/></svg></div>
           <h3>Nothing on the shelf just yet</h3>
-          <p style="color:var(--text-soft); margin-top:10px;">The original site's store only ever stocked WooCommerce demo samples, so we've left the clutter out. Everything Albert offers is a service, and it starts with a phone call.</p>
+          <p style="color:var(--text-soft); margin-top:10px;">The store on the original site only ever stocked demo samples from WooCommerce anyway, so there is none of that clutter. Everything Albert offers, you get as a service, and it all begins with a phone call.</p>
           <div style="display:flex; gap:14px; justify-content:center; margin-top:26px; flex-wrap:wrap;">
             <a class="btn btn-solid" href="tel:+61421667118">{icon("phone")} 0421 667 118</a>
             <a class="btn btn-outline" href="{href(route, 'serve')}">Browse Services</a>
@@ -1117,13 +1117,13 @@ def main():
     built.append(write_page("faq", build_faq()))
     built.append(write_page("pricing-coupons", build_pricing()))
     built.append(write_page("shop", build_shop_notice("shop", "Shop", "The shop is taking a rest",
-        "Albert's workshop is full of cars, not e-commerce boxes, and the original store only ever held WooCommerce demo products, so we've kept the URL and dropped the clutter.")))
+        "Albert's workshop is full of cars, not e-commerce boxes. The shop used to be populated by WooCommerce demo products only, so we have reused the URL as above and removed the clutter.")))
     built.append(write_page("cart", build_shop_notice("cart", "Cart", "Nothing in the cart",
         "There's nothing to check out. Everything Albert offers is a service, not a product.")))
     built.append(write_page("checkout", build_shop_notice("checkout", "Checkout", "Nothing to check out",
         "No products, no checkout, just honest auto electrical work.")))
     built.append(write_page("my-account", build_shop_notice("my-account", "My Account", "No account needed",
-        "You don't need an account to get great service, just a phone call.")))
+        "Just give us a call! You do not need an account to get great service.")))
     for i, e in enumerate(ESTIMATES):
         built.append(write_page("service-estimate/" + e["slug"], build_estimate(e, i)))
 

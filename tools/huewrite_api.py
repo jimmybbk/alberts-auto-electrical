@@ -71,8 +71,22 @@ def html_unescape(t):
     return html.unescape(t)
 
 
+def humanize(text, key, opt):
+    body = json.dumps({"text": text, "tone": opt.tone, "rewriteLevel": opt.rewrite}).encode()
+    req = urllib.request.Request(API, data=body, method="POST",
+                                 headers={"Authorization": "Bearer " + key,
+                                          "Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=120) as r:
+            return r.read().decode("utf-8")
+    except urllib.error.HTTPError as e:
+        return "HTTPERROR " + str(e.code) + ": " + e.read().decode("utf-8", "replace")[:200]
+
+
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("--per-block", action="store_true",
+                    help="one request per block (exact 1:1 mapping back to the pages)")
     ap.add_argument("--dry-run", action="store_true", help="show the plan, send nothing")
     ap.add_argument("--page", default="", help="only pages whose name contains this")
     ap.add_argument("--tone", default="professional",
@@ -104,6 +118,30 @@ def main():
                  "  or save it to huewrite_key.txt in the project root (gitignored)")
 
     results_path = os.path.join("data", "huewrite_results.json")
+    if opt.per_block:
+        out_path = os.path.join("data", "huewrite_results_blocks.json")
+        done = json.load(open(out_path, encoding="utf-8")) if os.path.exists(out_path) else {}
+        flat = []
+        for page, items in pages.items():
+            for item in items:
+                flat.append((page, item["i"], item))
+        todo = [(p, i, b) for p, i, b in flat if str(i) not in done]
+        print(f"per-block mode: {len(flat)} blocks total, {len(done)} already done, {len(todo)} to send")
+        fails = 0
+        for n, (page, i, b) in enumerate(todo, 1):
+            out = humanize(b["text"], key, opt)
+            if out.startswith("HTTPERROR"):
+                fails += 1
+                print(f"  [{n}/{len(todo)}] FAIL {out[:120]}")
+            else:
+                done[str(i)] = {"page": page, "lead": b["lead"], "text": " ".join(out.split())}
+                print(f"  [{n}/{len(todo)}] {page}: {len(b['text'].split())} -> {len(out.split())} words")
+            with open(out_path, "w", encoding="utf-8", newline="\n") as fh:
+                json.dump(done, fh, ensure_ascii=False, indent=1)   # save after every call
+            time.sleep(2.2)                     # stay under 30 requests/minute
+        print(f"saved {len(done)} block results to {out_path} | failed: {fails}")
+        return
+
     results = json.load(open(results_path, encoding="utf-8")) if os.path.exists(results_path) else {}
     for page, items in pages.items():
         text = "\n\n".join(b["text"] for b in items)
