@@ -1,3 +1,5 @@
 .DS_Store
 Thumbs.db
 debug.html
+__pycache__/
+_form-*.html

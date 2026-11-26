@@ -372,28 +372,211 @@
     });
   });
 
-  /* ----- Booking form → mail client ----- */
-  var form = document.querySelector("[data-mailto-form]");
+  /* ----- Booking form: photo attach + submit ----- */
+  var form = document.querySelector("[data-booking-form], [data-mailto-form]");
   if (form) {
+    var PHOTO_MAX_MB = 10;       // form services accept ~10 MB of attachments in total
+    var PHOTO_MAX_SIDE = 1600;   // bigger photos are resized on the visitor's device
+    var canFetch = typeof window.fetch === "function" && typeof window.AbortController === "function";
+    // data-endpoint = a form service URL that accepts multipart POST (e.g. FormSubmit).
+    // Empty = no service configured, so the visitor's email app is used instead.
+    function relayEndpoint() {
+      return canFetch ? (form.getAttribute("data-endpoint") || "").trim() : "";
+    }
+    // the on-page notes differ between "sent by the site" and "opens your email app"
+    var noteSend = form.querySelector("[data-note-send]");
+    var noteEmail = form.querySelector("[data-note-email]");
+    function syncNotes() {
+      var relay = !!relayEndpoint();
+      if (noteSend) noteSend.hidden = !relay;
+      if (noteEmail) noteEmail.hidden = relay;
+    }
+    syncNotes();
+
+    var photo = null;            // { blob, name } — the processed file to send
+    var previewUrl = null;
+    var fileInput = form.querySelector('input[type="file"]');
+    var zone = form.querySelector("[data-attach]");
+    var pick = form.querySelector("[data-attach-pick]");
+    var preview = form.querySelector("[data-attach-preview]");
+    var previewImg = form.querySelector("[data-attach-img]");
+    var nameEl = form.querySelector("[data-attach-name]");
+    var sizeEl = form.querySelector("[data-attach-size]");
+    var hint = form.querySelector("[data-attach-hint]");
+    var hintDefault = hint ? hint.textContent : "";
+    var submitBtn = form.querySelector('button[type="submit"]');
+    var submitLabel = submitBtn ? submitBtn.querySelector("[data-form-submit-label]") : null;
+    var submitDefault = submitLabel ? submitLabel.textContent : "";
+    var statusEl = form.querySelector("[data-form-status]");
+    var successEl = form.parentElement ? form.parentElement.querySelector("[data-form-success]") : null;
+
+    function friendlySize(bytes) {
+      return bytes >= 1024 * 1024
+        ? (bytes / (1024 * 1024)).toFixed(1) + " MB"
+        : Math.max(1, Math.round(bytes / 1024)) + " KB";
+    }
+
+    function setHint(msg, isError) {
+      if (!hint) return;
+      hint.textContent = msg || hintDefault;
+      hint.classList.toggle("is-error", !!isError);
+    }
+
+    function clearPhoto() {
+      photo = null;
+      if (previewUrl) { URL.revokeObjectURL(previewUrl); previewUrl = null; }
+      if (fileInput) fileInput.value = "";
+      if (preview) preview.hidden = true;
+      if (pick) pick.hidden = false;
+    }
+
+    function showPhoto(blob, name) {
+      photo = { blob: blob, name: name };
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      previewUrl = URL.createObjectURL(blob);
+      if (previewImg) previewImg.src = previewUrl;
+      if (nameEl) nameEl.textContent = name;
+      if (sizeEl) sizeEl.textContent = friendlySize(blob.size);
+      if (preview) preview.hidden = false;
+      if (pick) pick.hidden = true;
+      setHint("");
+    }
+
+    // Resize big photos locally so uploads stay small and quick. A file the
+    // browser can't decode (e.g. HEIC on Windows) is sent unchanged instead.
+    function shrink(file) {
+      return new Promise(function (resolve) {
+        var url = URL.createObjectURL(file);
+        var img = new Image();
+        img.onload = function () {
+          URL.revokeObjectURL(url);
+          var longest = Math.max(img.naturalWidth, img.naturalHeight);
+          if (longest <= PHOTO_MAX_SIDE) { resolve(file); return; }
+          var scale = PHOTO_MAX_SIDE / longest;
+          var canvas = document.createElement("canvas");
+          canvas.width = Math.round(img.naturalWidth * scale);
+          canvas.height = Math.round(img.naturalHeight * scale);
+          canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob(function (blob) { resolve(blob || file); }, "image/jpeg", 0.85);
+        };
+        img.onerror = function () { URL.revokeObjectURL(url); resolve(file); };
+        img.src = url;
+      });
+    }
+
+    function handleFile(file) {
+      if (!file) return;
+      if (!/^image\//.test(file.type)) {
+        clearPhoto();
+        setHint("That file isn't a picture — please choose a JPG or PNG photo.", true);
+        return;
+      }
+      if (file.size > PHOTO_MAX_MB * 1024 * 1024) {
+        clearPhoto();
+        setHint("That photo is over " + PHOTO_MAX_MB + " MB — please choose a smaller one.", true);
+        return;
+      }
+      shrink(file).then(function (blob) {
+        var base = (file.name || "photo").replace(/[.][^.]*$/, "");
+        showPhoto(blob, blob === file ? (file.name || "photo.jpg") : base + ".jpg");
+      });
+    }
+
+    if (fileInput) {
+      fileInput.addEventListener("change", function () { handleFile(fileInput.files[0]); });
+    }
+    if (pick && fileInput) {
+      pick.addEventListener("click", function () { fileInput.click(); });
+    }
+    var removeBtn = form.querySelector("[data-attach-remove]");
+    if (removeBtn) removeBtn.addEventListener("click", clearPhoto);
+    if (zone) {
+      ["dragenter", "dragover"].forEach(function (t) {
+        zone.addEventListener(t, function (e) { e.preventDefault(); zone.classList.add("is-dragover"); });
+      });
+      ["dragleave", "drop"].forEach(function (t) {
+        zone.addEventListener(t, function (e) { e.preventDefault(); zone.classList.remove("is-dragover"); });
+      });
+      zone.addEventListener("drop", function (e) { handleFile(e.dataTransfer.files[0]); });
+    }
+
+    function setBusy(busy) {
+      if (submitBtn) submitBtn.disabled = busy;
+      if (submitLabel) submitLabel.textContent = busy ? "Sending…" : submitDefault;
+    }
+
+    function setStatus(msg, isError) {
+      if (!statusEl) return;
+      statusEl.hidden = !msg;
+      statusEl.textContent = msg;
+      statusEl.classList.toggle("is-error", !!isError);
+    }
+
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-      var d = new FormData(form);
-      var lines = [
-        "Name: " + d.get("name"),
-        "Phone: " + d.get("phone"),
-        "Email: " + d.get("email"),
-        "Vehicle: " + (d.get("vehicle") || "-"),
-        "Service required: " + (d.get("service") || "-"),
-        "",
-        "Details:",
-        d.get("message") || "-"
-      ];
-      var subject = "Booking request — " + (d.get("service") || "General enquiry") + " (" + d.get("name") + ")";
-      window.location.href =
-        "mailto:albert@albertsautoelectrical.com.au?subject=" + encodeURIComponent(subject) +
-        "&body=" + encodeURIComponent(lines.join("\n"));
-      var note = form.querySelector(".form-confirm");
-      if (note) note.hidden = false;
+      var data = new FormData(form);
+      data.delete("photo");   // the raw file is replaced by the resized one
+      if (photo) data.append("photo", photo.blob, photo.name);
+
+      // No form service configured: hand off to the visitor's own email app.
+      var target = relayEndpoint();
+      if (!target) {
+        syncNotes();
+        var lines = [
+          "Name: " + data.get("name"),
+          "Phone: " + data.get("phone"),
+          "Email: " + data.get("email"),
+          "Vehicle: " + (data.get("vehicle") || "-"),
+          "Service required: " + (data.get("service") || "-"),
+          "",
+          "Details:",
+          data.get("message") || "-"
+        ];
+        var subject = "Booking request — " + (data.get("service") || "General enquiry") + " (" + data.get("name") + ")";
+        window.location.href =
+          "mailto:albert@albertsautoelectrical.com.au?subject=" + encodeURIComponent(subject) +
+          "&body=" + encodeURIComponent(lines.join("\n"));
+        var note = form.querySelector(".form-confirm");
+        if (note) note.hidden = false;
+        return;
+      }
+
+      setBusy(true);
+      setStatus("");
+      var controller = new AbortController();
+      var timer = setTimeout(function () { controller.abort(); }, 30000);
+      fetch(target, {
+        method: "POST",
+        body: data,
+        headers: { Accept: "application/json" },
+        signal: controller.signal
+      })
+        .then(function (res) {
+          return res.json().catch(function () { return {}; }).then(function (json) {
+            return res.ok && json.success !== "false" && json.success !== false;
+          });
+        })
+        .then(function (ok) {
+          clearTimeout(timer);
+          if (!ok) throw new Error("Form service did not accept the request");
+          var lead = successEl ? successEl.querySelector("[data-success-lead]") : null;
+          if (lead) {
+            lead.textContent = photo
+              ? "Your booking request and photo are on their way to Albert"
+              : "Your booking request is on its way to Albert";
+          }
+          form.hidden = true;
+          if (successEl) {
+            successEl.hidden = false;
+            successEl.setAttribute("tabindex", "-1");
+            successEl.focus();
+          }
+        })
+        .catch(function () {
+          clearTimeout(timer);
+          setBusy(false);
+          setStatus("Sorry — that didn't send. Please try again, or call 0421 667 118.", true);
+        });
     });
   }
 

@@ -135,8 +135,12 @@
         <!-- FORM -->
         <div class="form-card reveal" id="booking">
           <h3>Request a booking or quote</h3>
-          <p>Fill in the details and hit send — we'll open an email to Albert with everything ready to go.</p>
-          <form data-mailto-form>
+          <p>Tell us what's going on and attach a photo if it helps — we'll get back to you fast.</p>
+          <!-- data-endpoint: the form service that receives enquiries and photos.
+               Empty the attribute to fall back to opening the visitor's email app. -->
+          <form data-booking-form data-endpoint="https://formsubmit.co/ajax/albert@albertsautoelectrical.com.au">
+            <input type="hidden" name="_subject" value="Booking request — Albert's Auto Electrical website">
+            <input type="text" name="_honey" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
             <div class="form-grid">
               <div class="field">
                 <label for="name">Your name *</label>
@@ -172,14 +176,46 @@
                 <label for="message">Tell us what's going on</label>
                 <textarea id="message" name="message" placeholder="Symptoms, when it happens, what you've already tried…"></textarea>
               </div>
+              <div class="field full">
+                <label for="photo">Attach a photo <span class="opt">(optional)</span></label>
+                <div class="attach" data-attach>
+                  <input type="file" id="photo" name="photo" accept="image/*" capture="environment" class="visually-hidden" aria-describedby="photo-hint">
+                  <button type="button" class="attach-pick" data-attach-pick>
+                    <span class="attach-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
+                    <span class="attach-copy">
+                      <strong>Add a photo</strong>
+                      <small>Take one or choose a picture — a warning light, wiring, a battery label…</small>
+                    </span>
+                  </button>
+                  <div class="attach-preview" data-attach-preview hidden>
+                    <img data-attach-img alt="The photo you're attaching">
+                    <span class="attach-meta">
+                      <strong data-attach-name></strong>
+                      <small data-attach-size></small>
+                    </span>
+                    <button type="button" class="attach-remove" data-attach-remove aria-label="Remove photo">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <span class="hint" id="photo-hint" data-attach-hint>JPG or PNG up to 10&nbsp;MB. Large photos are resized on your device before sending.</span>
+              </div>
             </div>
             <button class="btn btn-solid" type="submit">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg>
-              Send Booking Request
+              <span data-form-submit-label>Send Booking Request</span>
             </button>
-            <p class="form-note">Your email app will open with the details filled in — just press send. Prefer to talk? Call <a href="tel:+61421667118"><strong>0421 667 118</strong></a>.</p>
-            <p class="form-note form-confirm" hidden style="color:#0f7b3e; font-weight:700;">✓ Your email client should now be open with your booking request — hit send and Albert will be in touch.</p>
+            <p class="form-note" data-note-send>Prefer to talk? Call <a href="tel:+61421667118"><strong>0421 667 118</strong></a>.</p>
+            <p class="form-note form-legal" data-note-send>Your details are used only to reply to this enquiry. Enquiries are delivered to us by FormSubmit.</p>
+            <p class="form-note" data-note-email hidden>Your email app will open with the details filled in — just press send. Prefer to talk? Call <a href="tel:+61421667118"><strong>0421 667 118</strong></a>.</p>
+            <p class="form-confirm" hidden>✓ Your email app should now be open with your booking request — hit send and Albert will be in touch.</p>
+            <p class="form-status" data-form-status role="status" aria-live="polite" hidden></p>
           </form>
+          <div class="form-success" data-form-success hidden>
+            <div class="ok-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></div>
+            <h4>Got it — thank you!</h4>
+            <p><span data-success-lead>Your booking request is on its way to Albert</span>, who will be in touch shortly. Need it sorted urgently? Call <a href="tel:+61421667118"><strong>0421 667 118</strong></a>.</p>
+          </div>
         </div>
       </div>
 

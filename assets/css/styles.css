@@ -524,6 +524,62 @@ body.nav-open .nav-toggle span::after { top: 0; transform: rotate(-45deg); }
 }
 .field textarea { min-height: 130px; resize: vertical; }
 .form-note { font-size: 13px; color: var(--text-soft); margin-top: 14px; }
+.form-legal { font-size: 12px; margin-top: 6px; }
+
+/* ---------- Form: photo attach, status, success ---------- */
+[hidden] { display: none !important; }
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+.hp-field { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }   /* honeypot for bots */
+.field .opt { color: var(--text-soft); font-weight: 500; text-transform: none; letter-spacing: 0; }
+.hint { font-size: 13px; color: var(--text-soft); }
+.hint.is-error { color: #b03a2e; font-weight: 600; }
+
+.attach { position: relative; }
+.attach-pick {
+  display: flex; align-items: center; gap: 16px; width: 100%; text-align: left; cursor: pointer;
+  background: var(--paper); color: var(--text); font: inherit;
+  border: 2px dashed var(--line); border-radius: 12px; padding: 14px 18px;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+}
+.attach-pick:hover, .attach.is-dragover .attach-pick { border-color: var(--blue); background: #fff; }
+.attach.is-dragover .attach-pick { transform: scale(1.01); }
+.attach-ico {
+  width: 46px; height: 46px; border-radius: 12px; flex: none; display: grid; place-items: center;
+  background: var(--blue-soft); color: var(--blue-strong);
+}
+.attach-ico svg { width: 24px; height: 24px; }
+.attach-copy { min-width: 0; }
+.attach-copy strong { display: block; font-family: var(--font-display); font-size: 15.5px; color: var(--ink); }
+.attach-copy small { display: block; color: var(--text-soft); font-size: 13.5px; margin-top: 2px; line-height: 1.4; }
+
+.attach-preview {
+  display: flex; align-items: center; gap: 14px; background: #fff;
+  border: 1.5px solid rgba(46, 155, 255, 0.45); border-radius: 12px; padding: 10px 12px;
+}
+.attach-preview img { width: 64px; height: 64px; object-fit: cover; border-radius: 10px; flex: none; background: var(--paper); }
+.attach-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.attach-meta strong { font-size: 14.5px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.attach-meta small { color: var(--text-soft); font-size: 13px; }
+.attach-remove {
+  width: 38px; height: 38px; border-radius: 50%; flex: none; cursor: pointer;
+  border: 1px solid var(--line); background: #fff; color: var(--text-soft); display: grid; place-items: center;
+}
+.attach-remove:hover { color: #b03a2e; border-color: #b03a2e; }
+.attach-remove svg { width: 18px; height: 18px; }
+
+.form-status { margin-top: 16px; padding: 12px 16px; border-radius: 12px; font-size: 14.5px; font-weight: 600; }
+.form-status.is-error { background: #fdecea; color: #b03a2e; border: 1px solid #f5b7b1; }
+.form-confirm { margin-top: 14px; font-size: 13px; color: #0f7b3e; font-weight: 700; }
+.btn[disabled] { opacity: 0.6; cursor: progress; transform: none !important; box-shadow: none; }
+
+.form-success { text-align: center; padding: 18px 6px; outline: none; }
+.form-success .ok-ico {
+  width: 68px; height: 68px; border-radius: 50%; margin: 0 auto 18px; display: grid; place-items: center;
+  background: #e8f8ee; color: #0f7b3e;
+}
+.form-success .ok-ico svg { width: 34px; height: 34px; }
+.form-success h4 { font-size: 24px; margin-bottom: 10px; }
+.form-success p { color: var(--text-soft); font-size: 15.5px; }
 .form-card .btn { margin-top: 22px; }
 .map-wrap { border-radius: 20px; overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow); margin-top: 48px; }
 .map-wrap iframe { width: 100%; height: 420px; border: 0; display: block; }
