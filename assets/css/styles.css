@@ -833,12 +833,13 @@ section[id] { scroll-margin-top: 92px; }   /* linked sections clear the sticky h
   body.nav-open .main-nav { transform: none; opacity: 1; visibility: visible; }
   .main-nav ul { flex-direction: column; align-items: stretch; gap: 2px; }
   .main-nav a { padding: 14px 12px; font-size: 16.5px; border-radius: 12px; }
-  .sub-menu {
+  .main-nav .sub-menu {
     position: static; opacity: 1; visibility: visible; transform: none;
     background: rgba(255,255,255,0.04); box-shadow: none; margin: 2px 0 6px; padding: 6px;
     display: none;
   }
   .has-sub.open .sub-menu { display: block; }
+  .has-sub.open > a::after { transform: rotate(180deg); }
   .has-sub > a::after { float: right; }
   .sub-menu a { color: var(--text-inv); font-size: 15px; }
   .sub-menu a span { color: var(--text-inv-soft); }
