@@ -162,7 +162,7 @@ NAV = [
         ("serve/classic-cars", "Classic Cars"),
         ("serve/cars-trucks-and-four-wheel-drives", "Cars, Trucks &amp; 4WDs"),
         ("serve/installation-of-a-c-units-air-con-service", "Air Conditioning"),
-        ("serve/tires-wheels", "Engine Services"),
+        ("serve/tires-wheels", "Engine Electrical &amp; Diagnostics"),
     ]),
     ("blog", "blog", "Blog", None),
     ("gallery", "gallery", "Gallery", None),
@@ -786,16 +786,17 @@ def build_serve_detail(slug):
              "Compressor, condenser &amp; blower repairs",
              "Cabin air &amp; heating faults sorted"])
         desc = "Vehicle air-conditioning installation, service and repair in Smithfield NSW. Stay cool with Albert's Auto Electrical."
-    else:  # tires-wheels -> Engine Services (original title/content)
+    else:  # tires-wheels -> engine electrical & diagnostics
         content = service_detail(
-            route, "Service 05", "Engine Services",
-            "One of the simplest ways of protecting the life of your car, especially the engine life, is servicing, which is also one of the most effective and cheapest ways. An oil change can really change your mood. And it will definitely change your oil.",
-            "assets/img/workshop-wide.jpg", "Preventative maintenance",
-            ["Oil changes &amp; filter replacements",
-             "Preventative maintenance schedules",
-             "30+ common vehicle repairs and growing",
-             "Diagnostics before small problems become big ones"])
-        desc = "Engine services and preventative maintenance at Albert's Auto Electrical: oil changes, filters and the checks that prevent breakdowns."
+            route, "Service 05", "Engine Electrical &amp; Diagnostics",
+            "Slow cranking, flickering battery lights and warning lamps that will not clear are almost always electrical. We test the starting and charging systems properly, then fix the real cause.",
+            "assets/img/workshop-wide.jpg", "Starting &amp; charging specialists",
+            ["Batteries supplied &amp; fitted for all makes",
+             "Alternator &amp; starter motor repairs",
+             "Check-engine light &amp; electrical diagnostics",
+             "Charging system tests before you commit"])
+        desc = "Engine electrical and diagnostics at Albert's Auto Electrical: batteries, alternators, starter motors and fault-finding in Smithfield NSW."
+    return page_shell(route, page_title_for(slug), desc, "services", content)
     return page_shell(route, page_title_for(slug), desc, "services", content)
 
 
@@ -805,7 +806,7 @@ def page_title_for(slug):
         "classic-cars": "Classic Cars",
         "cars-trucks-and-four-wheel-drives": "Cars, Trucks & Four-Wheel Drives",
         "installation-of-a-c-units-air-con-service": "Installation of A/C Units (Air Con Service)",
-        "tires-wheels": "Engine Services",
+        "tires-wheels": "Engine Electrical & Diagnostics",
     }
     return f"{names[slug]} | Services | Albert's Auto Electrical"
 
@@ -813,12 +814,12 @@ def page_title_for(slug):
 # ---------------------------------------------------------------- new: FAQ + pricing
 FAQ_ITEMS = [
     ("How long will it take to complete the repairs?", "Most repairs are done the same day. If not possible, we arrange special transportation."),
-    ("How much will it cost?", "We are happy to give you a fair-price estimate before work begins. Tell us about your vehicle and its symptoms, and you will know where you stand before we turn a spanner."),
+    ("How much will it cost?", "We are happy to give you a fair-price estimate before work begins. Tell us about your vehicle and its symptoms, and you will know where you stand before any work begins."),
     ("Is there a warranty on the repairs?", "Albert's Auto Electrical stands behind its workmanship, with quality repairs backed by our guarantee. Call us to discuss the specifics of your job."),
     ("Do I have an option to pickup and deliver my vehicle?", "Yes, collection & delivery of your vehicle can be arranged. Please ask when booking."),
     ("What types of vehicles do you service?", "Performance cars, classic cars, daily drivers, 4WDs, trucks, and light commercials: all makes and models."),
     ("What forms of payment do you accept?", "Call us on 0421 667 118 to confirm the payment options for your job."),
-    ("How often should I get my car serviced?", "Follow your manufacturer's logbook intervals, and if something electrical is acting up between services, don't wait for it to get worse."),
+    ("My car won't start. Is it the battery or the alternator?", "It can be either. We test the battery, alternator and starter motor to find the real cause, so you only pay for the fix you actually need."),
     ("My car's battery light just came on. What should I do?", "Something is wrong with the battery or charging system. Get it checked out as soon as possible; you do not want to be stranded as a result of a dying alternator."),
     ("Can you install accessories like driving lights or a UHF radio?", "Absolutely. Driving lights, spotties, light bars, UHF/CB radios, dual battery systems, brake controllers and more."),
     ("Do you work on race cars and performance builds?", "Yes. ECU supply and fitting, full rewires, engine conversions, and engine management such as Haltech, FuelTech, MicroTech."),
@@ -850,7 +851,7 @@ def build_faq():
 
     {cta_band(route, "Have a car repair question?", "Speak to a real auto electrician, not a phone menu, to get your automotive answers.")}'''
     return page_shell(route, "FAQ | Albert's Auto Electrical",
-                      "Answers to common questions about repairs, pricing, bookings, warranties and servicing at Albert's Auto Electrical, Smithfield NSW.",
+                      "Answers to common questions about repairs, pricing, bookings, warranties and auto electrical work at Albert's Auto Electrical, Smithfield NSW.",
                       "contact", main)
 
 
@@ -858,9 +859,7 @@ def build_pricing():
     route = "pricing-coupons"
     coupons = [
         ("$10 OFF", "Repairs!", "New Customer Coupon", "Present this coupon and receive $10 off any service."),
-        ("$15 OFF", "Maintenance!", "Standard Oil Change", "Present this coupon and receive $15 off a standard oil change."),
-        ("$25 OFF", "Brake Service!", "Front or Rear Brake Pads", "Save $25 off front or rear brake pads with this coupon."),
-    ]
+            ]
     coupon_html = "".join(f'''
           <article class="coupon-card reveal">
             <div class="coupon-value">{v}</div>
@@ -871,8 +870,7 @@ def build_pricing():
           </article>''' for v, w, n, d in coupons)
     rows = "".join(f'''
             <tr><td>{s}</td><td>{p}</td></tr>''' for s, p in [
-        ("Preventative Maintenance", "From $99"),
-        ("Electrical Diagnostics", "From $60"),
+            ("Electrical Diagnostics", "From $60"),
         ("Battery Replacement", "From $150 fitted"),
         ("Alternator / Starter Repairs", "Quote on inspection"),
         ("Full Custom Rewire", "Quote per project"),
@@ -1124,8 +1122,6 @@ def main():
         "No products, no checkout, just honest auto electrical work.")))
     built.append(write_page("my-account", build_shop_notice("my-account", "My Account", "No account needed",
         "Just give us a call! You do not need an account to get great service.")))
-    for i, e in enumerate(ESTIMATES):
-        built.append(write_page("service-estimate/" + e["slug"], build_estimate(e, i)))
 
     with open(os.path.join(ROOT, "404.html"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write(build_404())
@@ -1143,7 +1139,6 @@ def main():
     routes += [b["slug"] for b in BLOG]
     routes += ["testimonial/" + t["slug"] for t in TESTIMONIALS]
     routes += ["gallery/" + g["slug"] for g in GALLERY]
-    routes += ["service-estimate/" + e["slug"] for e in ESTIMATES]
     routes = list(dict.fromkeys(routes))  # dedupe, keep order
 
     # redirect stubs for the old flat URLs (bookmarks / history / old links)
